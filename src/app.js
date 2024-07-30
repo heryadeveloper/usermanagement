@@ -12,7 +12,7 @@ app.use((req, _, next) => {
 })
 
 app.get('/checkservice', (req, res) => {
-    res.send('Service usermanagement is up -> V1.0');
+    res.send('Service usermanagement is up -> V1.1');
 })
 
 app.use(bodyParser.urlencoded({ extended: false}))
