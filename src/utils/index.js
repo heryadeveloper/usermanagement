@@ -1,0 +1,1 @@
+module.exports.laporanSppSiswaValidation = require('./laporanSppSiswa.validation');

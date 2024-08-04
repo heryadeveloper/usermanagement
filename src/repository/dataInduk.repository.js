@@ -131,11 +131,26 @@ async function getListAll(){
         const listKelas = await db.data_induk.findAll({
             attributes: [
                 [sequelize.fn('DISTINCT', sequelize.col('rombel_saat_ini')), 'rombel_saat_ini'],
+                'nama','nisn'
             ],
-            group: ['rombel_saat_ini'],
+            group: ['rombel_saat_ini', 'nama', 'nisn'],
+            order: [['nama', 'asc']],
             raw: true,
         })
-        return listKelas;
+         // Transform data menjadi struktur yang diinginkan
+        const data = listKelas.reduce((acc, item) => {
+        // Cek apakah rombel_saat_ini sudah ada dalam akumulator
+        let rombel = acc.find(r => r.rombel_saat_ini === item.rombel_saat_ini);
+        if (!rombel) {
+          // Jika tidak ada, tambahkan rombel baru dengan detail kosong
+            rombel = { rombel_saat_ini: item.rombel_saat_ini, detail: [] };
+            acc.push(rombel);
+        }
+        // Tambahkan detail ke rombel yang sesuai
+        rombel.detail.push({ nama: item.nama, nisn: item.nisn });
+        return acc;
+        }, []);
+        return data;
     } catch (error) {
         console.error('Error when proccessing get list', error);
         throw error;
