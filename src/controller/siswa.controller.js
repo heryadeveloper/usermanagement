@@ -50,10 +50,19 @@ const getListAll = catchAsync(async(req, res) => {
     }
 })
 
+const getKelas = catchAsync(async(req, res) => {
+    const getKelasAll = await dataIndukRepository.getKelasAll();
+    if (getKelasAll) {
+        res.send(responseInfo('Success Get Data', getKelasAll));
+    } else {
+        res.send(errorExpectationFailed('Cannot Get Data', null));
+    }
+})
 module.exports = {
     getDataSiswaInRombel,
     getListAllKelas,
     getListAllKelasXI,
     getListAllKelasXII,
     getListAll,
+    getKelas
 }

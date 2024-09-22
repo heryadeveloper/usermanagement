@@ -157,10 +157,28 @@ async function getListAll(){
     }
 }
 
+async function getKelasAll(){
+    try {
+        const listKelasAll = await db.data_induk.findAll({
+            attributes: [
+                [sequelize.fn('DISTINCT', sequelize.col('rombel_saat_ini')), 'rombel_saat_ini'],
+            ],
+            group: ['rombel_saat_ini'],
+            order: [['rombel_saat_ini', 'asc']],
+            raw: true,
+        });
+        return listKelasAll;
+    } catch (error) {
+        console.error('Error When get data kelas');
+        throw error;
+    }
+}
+
 module.exports = {
     getListDataSiswa,
     getListAllKelas,
     getListAllKelasXI,
     getListAllKelasXII,
     getListAll,
+    getKelasAll
 }

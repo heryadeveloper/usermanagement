@@ -10,6 +10,7 @@ const routes = [
     { path: '/sppByNisn', method: 'get', handler: laporanSppController.getDataSppByNisn},
     { path: '/bulanKosong', method: 'get', handler: laporanSppController.getBulanBelumBayar},
     { path: '/addPembayaranSpp', method: 'post', validation: laporanSppSiswaValidation.inputPembayaran, handler: laporanSppController.inputPembayaran},
+    { path: '/gethistoryBayarSppNew', method: 'get', handler: laporanSppController.getDataHistoryPembayaranSpp},
 ];
 
 routes.forEach(route => {

@@ -91,9 +91,21 @@ async function inputPembayaran(req){
     }
 }
 
+async function getHistoryPembayaranSppNew(req){
+    try {
+        const {page, pageSize} = req.query;
+        const dataHistoryPembayaranSppNew = laporanSppSiswaRepository.getHistoryPembayaranSppNew(page, pageSize);
+        return dataHistoryPembayaranSppNew;
+    } catch (error) {
+        console.error('Error in service method get history pembayaran new', error)
+        throw error;
+    }
+}
+
 module.exports = {
     getDataSpp,
     getDataSppByNisn,
     getBulanBelumBayar,
     inputPembayaran,
+    getHistoryPembayaranSppNew
 }

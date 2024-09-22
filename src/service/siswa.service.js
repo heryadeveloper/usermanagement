@@ -12,6 +12,17 @@ async function listSiswa(req){
     }
 }
 
+async function listKelas(){
+    try {
+        const listKelasAll = await dataIndukRepository.getKelasAll();
+        return listKelasAll;
+    } catch (error) {
+        console.error('Error in service list kelas: ', error);
+        throw error;
+    }
+}
+
 module.exports = {
     listSiswa,
+    listKelas,
 }

@@ -305,6 +305,35 @@ async function nilaiKekuranganPembayaran(nisn){
         throw error;
     }
 }
+
+async function getHistoryPembayaranSppNew(page, pageSize){
+    try {
+        const totalCount = await db.laporan_spp_siswa.count({
+            raw:true,
+        });
+
+        const offset = (page - 1) * pageSize;
+        const responseData = await db.laporan_spp_siswa.findAll({
+            order:[['id','DESC']],
+            offset: offset,
+            limit: pageSize,
+            raw: true,
+        });
+
+        // format tanggal bayar
+        const formattedData = responseData.map(record => {
+            const formattedData = moment(record.tanggal_bayar).format('DD-MM-YYYY');
+            return { ...record, tanggal_bayar: formattedData};
+        })
+        return{
+            totalCount: totalCount,
+            responseData: formattedData,
+        }
+    } catch (error) {
+        console.error('Error get data table laporan praktikum', error);
+        throw error;
+    }
+}
 module.exports = {
     getDataSpp,
     getDataSppByNisn,
@@ -317,4 +346,5 @@ module.exports = {
     updateDataKekuranganPemasukan,
     validasiBulanBayar,
     nilaiKekuranganPembayaran,
+    getHistoryPembayaranSppNew
 }

@@ -10,6 +10,7 @@ const routes = [
     { path: '/kelasXi', method: 'get', handler: siswaController.getListAllKelasXI},
     { path: '/kelasXii', method: 'get', handler: siswaController.getListAllKelasXII},
     { path: '/allKelas', method: 'get', handler: siswaController.getListAll},
+    { path: '/kelas', method: 'get', handler: siswaController.getKelas}
 ];
 
 routes.forEach(route => {

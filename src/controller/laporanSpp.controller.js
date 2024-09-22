@@ -39,9 +39,19 @@ const inputPembayaran = catchAsync(async(req, res) => {
     }
 })
 
+const getDataHistoryPembayaranSpp = catchAsync(async(req, res) => {
+    const getHistory = await laporanSppService.getHistoryPembayaranSppNew(req);
+    if (getHistory) {
+        res.send(responseInfo('Success Get Data History', getHistory));
+    } else {
+        res.send(expectationFailed('Something Error', null));
+    }
+})
+
 module.exports = {
     getDataSpp,
     getDataSppByNisn,
     getBulanBelumBayar,
-    inputPembayaran
+    inputPembayaran,
+    getDataHistoryPembayaranSpp
 }
