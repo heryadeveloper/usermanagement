@@ -23,5 +23,14 @@ app.use(cookieParser());
 
 app.use('/v2', routess);
 
+// Middleware untuk melayani file build React
+app.use(express.static(path.join(__dirname, '../build'))); // arahkan ke folder build
+
+// Semua permintaan selain API akan di-redirect ke index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../build', 'index.html'));
+});
+
+
 
 module.exports = app;
