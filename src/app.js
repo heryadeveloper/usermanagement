@@ -1,5 +1,6 @@
 const express = require('express');
 const {postgres} = require('./config/pg');
+const {mysql} = require('./config/mysql');
 const routess = require('./routes');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
@@ -8,6 +9,11 @@ const app = express();
 
 app.use((req, _, next) => {
     req.postgres = postgres;
+    next()
+})
+
+app.use((req, _, next) => {
+    req.mysql = mysql;
     next()
 })
 
@@ -22,14 +28,6 @@ app.use(cors());
 app.use(cookieParser());
 
 app.use('/v2', routess);
-
-// // Middleware untuk melayani file build React
-// app.use(express.static(path.join(__dirname, '../build'))); // arahkan ke folder build
-
-// // Semua permintaan selain API akan di-redirect ke index.html
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(__dirname, '../build', 'index.html'));
-// });
 
 
 

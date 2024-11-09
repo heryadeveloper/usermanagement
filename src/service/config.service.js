@@ -17,7 +17,8 @@ async function getTahunAjaran(){
     }
     const responseInfo = {
         schoolYearStart,
-        schoolYearEnd
+        schoolYearEnd,
+        tahunajaran: `${schoolYearStart}/${schoolYearEnd}`
     }
 
     return responseInfo;

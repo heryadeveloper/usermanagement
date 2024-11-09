@@ -1,0 +1,1 @@
+module.exports.dataValidation = require('./data.validation');

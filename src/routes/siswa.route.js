@@ -1,6 +1,7 @@
 const express = require('express');
 const validate = require('../middleware/validate');
 const { siswaController } = require('../controller');
+const { path } = require('@hapi/joi/lib/errors');
 
 const router = express.Router();
 
@@ -10,7 +11,10 @@ const routes = [
     { path: '/kelasXi', method: 'get', handler: siswaController.getListAllKelasXI},
     { path: '/kelasXii', method: 'get', handler: siswaController.getListAllKelasXII},
     { path: '/allKelas', method: 'get', handler: siswaController.getListAll},
-    { path: '/kelas', method: 'get', handler: siswaController.getKelas}
+    { path: '/kelas', method: 'get', handler: siswaController.getKelas},
+    { path: '/listKelas', method: 'get', handler: siswaController.listKelas},
+    { path: '/listKelasTahunAjaran', method: 'get', handler: siswaController.listKelasDet},
+    { path: '/listNamaSiswa', method: 'get', handler: siswaController.listNamaSiswa}
 ];
 
 routes.forEach(route => {

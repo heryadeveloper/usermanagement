@@ -2,7 +2,7 @@ const catchAsync = require('../utils/catchAsync');
 const {siswaService} = require('../service');
 const responseInfo = require('../utils/responseInfo');
 const errorExpectationFailed = require('../utils/errorExpectationFailed');
-const { dataIndukRepository } = require('../repository');
+const { dataIndukRepository, dataIndukMysqlRepository } = require('../repository');
 
 const getDataSiswaInRombel = catchAsync(async(req, res) => {
     const listSiswa =await siswaService.listSiswa(req);
@@ -15,7 +15,8 @@ const getDataSiswaInRombel = catchAsync(async(req, res) => {
 })
 
 const getListAllKelas = catchAsync(async(req, res) => {
-    const getAllKelas = await dataIndukRepository.getListAllKelas();
+    // const getAllKelas = await dataIndukMysqlRepository.getListAllKelasX();
+    const getAllKelas = await siswaService.listKelasX(req);
     if (getAllKelas) {
         res.send(responseInfo('Success Get Data', getAllKelas));
     } else {
@@ -24,7 +25,7 @@ const getListAllKelas = catchAsync(async(req, res) => {
 })
 
 const getListAllKelasXI = catchAsync(async(req, res) => {
-    const getAllKelasXI = await dataIndukRepository.getListAllKelasXI();
+    const getAllKelasXI = await dataIndukMysqlRepository.getListAllKelasXI();
     if (getAllKelasXI) {
         res.send(responseInfo('Success Get Data', getAllKelasXI));
     } else {
@@ -51,11 +52,38 @@ const getListAll = catchAsync(async(req, res) => {
 })
 
 const getKelas = catchAsync(async(req, res) => {
-    const getKelasAll = await dataIndukRepository.getKelasAll();
+    const getKelasAll = await dataIndukMysqlRepository.listRombel();
     if (getKelasAll) {
         res.send(responseInfo('Success Get Data', getKelasAll));
     } else {
         res.send(errorExpectationFailed('Cannot Get Data', null));
+    }
+})
+
+const listKelas = catchAsync(async(req, res) => {
+    const listKelass = await dataIndukMysqlRepository.getListKelas();
+    if (listKelass) {
+        res.send(responseInfo('Success Get Data', listKelass));
+    } else {
+        res.send(errorExpectationFailed('Data not found', null));
+    }
+})
+
+const listKelasDet = catchAsync(async(req, res) => {
+    const listKelasDet = await siswaService.getListKelasDet(req);
+    if (listKelasDet) {
+        res.send(responseInfo('Success Get Data Kelas', listKelasDet));
+    } else {
+        res.send(errorExpectationFailed('Data Not Found', null));
+    }
+})
+
+const listNamaSiswa = catchAsync(async(req, res) => {
+    const listNamaSiswa = await siswaService.getListNamaSiswa(req);
+    if (listNamaSiswa) {
+        res.send(responseInfo('Success Get Nama Siswa', listNamaSiswa));
+    } else {
+        res.send(errorExpectationFailed('Data Not Found', null));
     }
 })
 module.exports = {
@@ -64,5 +92,8 @@ module.exports = {
     getListAllKelasXI,
     getListAllKelasXII,
     getListAll,
-    getKelas
+    getKelas,
+    listKelas,
+    listKelasDet,
+    listNamaSiswa
 }
