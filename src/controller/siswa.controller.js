@@ -43,7 +43,8 @@ const getListAllKelasXII = catchAsync(async(req, res) => {
 })
 
 const getListAll = catchAsync(async(req, res) => {
-    const getListKelas = await dataIndukRepository.getListAll();
+    // const getListKelas = await dataIndukRepository.getListAll();
+    const getListKelas = await siswaService.getAllKelas(req);
     if (getListKelas) {
         res.send(responseInfo('Success Get Data', getListKelas));
     } else {

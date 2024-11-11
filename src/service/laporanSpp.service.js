@@ -1,5 +1,5 @@
 const { Http } = require("winston/lib/winston/transports");
-const { laporanSppSiswaRepository, kekuranganPembayaranRepository } = require("../repository");
+const { laporanSppSiswaRepository, kekuranganPembayaranRepository, laporanSppMysqlRepository, kekuranganPembayaranMysqlRepository } = require("../repository");
 const ApiError = require("../utils/ApiError");
 const expectationFailed = require('../utils/errorExpectationFailed');
 const httpStatus = require("http-status");
@@ -7,7 +7,7 @@ const httpStatus = require("http-status");
 async function getDataSpp(req){
     try {
         const { bulan_bayar, tahun_bayar, kelas, page, pageSize } = req.query;
-        const getDataSppTransaksi =  laporanSppSiswaRepository.getDataSpp(bulan_bayar, tahun_bayar, kelas, page, pageSize);
+        const getDataSppTransaksi =  laporanSppMysqlRepository.getDataSpp(bulan_bayar, tahun_bayar, kelas, page, pageSize);
         return getDataSppTransaksi
     } catch (error) {
         console.error('Error in service get data spp', error);
@@ -18,8 +18,8 @@ async function getDataSpp(req){
 async function getDataSppByNisn(req){
     try {
         const { nisn } = req.query;
-        const getDataSppByNisns = await laporanSppSiswaRepository.getDataSppByNisn(nisn);
-        const nilaiKekuranganSiswa = await laporanSppSiswaRepository.nilaiKekuranganPembayaran(nisn);
+        const getDataSppByNisns = await laporanSppMysqlRepository.getDataSppByNisn(nisn);
+        const nilaiKekuranganSiswa = await laporanSppMysqlRepository.nilaiKekuranganPembayaran(nisn);
         return {
             dataSpp: getDataSppByNisns,
             nilaiKekurangan: nilaiKekuranganSiswa,
@@ -33,7 +33,8 @@ async function getDataSppByNisn(req){
 async function getBulanBelumBayar(req){
     try {
         const { nisn, kelas, tahunAjaran} = req.query;
-        const getDataBulan = laporanSppSiswaRepository.getBulanBelumBayar(nisn, kelas, tahunAjaran);
+        // const getDataBulan = laporanSppSiswaRepository.getBulanBelumBayar(nisn, kelas, tahunAjaran);
+        const getDataBulan = laporanSppMysqlRepository.getBulanBelumBayar(nisn, kelas, tahunAjaran);
         return getDataBulan;
     } catch (error) {
         console.error('Error in service get data : ', error);
@@ -44,39 +45,39 @@ async function getBulanBelumBayar(req){
 async function inputPembayaran(req){
     const {nama, nisn, kelas, nominal, periode, petugas_input, tahun_ajaran, tanggal_bayar, bulan} = req.body;
     try {
-        const findKodePembayaran = await laporanSppSiswaRepository.getKodePembayaran(kelas);
+        const findKodePembayaran = await laporanSppMysqlRepository.getKodePembayaran(kelas);
         const kode_bayar = findKodePembayaran[0].kode_pembayaran;
         console.log('kode bayar ', kode_bayar);
         for(const datas of bulan){
             const {bulan_bayar, nominal_bayar, tahun_ajaran} = datas;
 
              // validasi terlebih dahulu, jika bulan dan tahun ajaran sudah ada di DB langsung di tolak transaksinya.
-            const validasiBulanBayar = await laporanSppSiswaRepository.validasiBulanBayar(nisn, bulan_bayar, tahun_ajaran);
+            const validasiBulanBayar = await laporanSppMysqlRepository.validasiBulanBayar(nisn, bulan_bayar, tahun_ajaran);
             if (validasiBulanBayar !== 0) {
                 throw new ApiError(httpStatus.CONFLICT, 'bulan is available in table');
             } else {
                 const nominal = parseFloat(nominal_bayar);
-                const dataKurangBayar = await laporanSppSiswaRepository.getDataKekurangan(nisn, kode_bayar);
+                const dataKurangBayar = await laporanSppMysqlRepository.getDataKekurangan(nisn, kode_bayar);
             
-                const countData = await laporanSppSiswaRepository.getCountKekuranganPembayaranSiswa(nisn, kode_bayar);
+                const countData = await laporanSppMysqlRepository.getCountKekuranganPembayaranSiswa(nisn, kode_bayar);
                 // insert table bayar spp
-                await laporanSppSiswaRepository.insertPembayaranSpp(nama, kelas, nisn, kode_bayar, nominal_bayar, bulan_bayar, petugas_input, tahun_ajaran);
+                await laporanSppMysqlRepository.insertPembayaranSpp(nama, kelas, nisn, kode_bayar, nominal_bayar, bulan_bayar, petugas_input, tahun_ajaran);
                 if (countData === 0) {
                     const perhitungan = findKodePembayaran[0].nominal_total - nominal_bayar;
-                    await kekuranganPembayaranRepository.insertTableKekuranganPembayaranSiswa(nama, kelas, nisn, kode_bayar, 'SPP', perhitungan, petugas_input);
+                    await kekuranganPembayaranMysqlRepository.insertTableKekuranganPembayaranSiswa(nama, kelas, nisn, kode_bayar, 'SPP', perhitungan, petugas_input);
                 } else {
                     console.log('perhitungan bulan: ', bulan_bayar);
                     const nominal_akhir = dataKurangBayar[0].nilai_terkecil;
                     const perhitunganNominalAkhir = nominal_akhir - nominal_bayar;
-                    await kekuranganPembayaranRepository.insertTableKekuranganPembayaranSiswa(nama, kelas, nisn, kode_bayar, 'SPP', perhitunganNominalAkhir, petugas_input);
+                    await kekuranganPembayaranMysqlRepository.insertTableKekuranganPembayaranSiswa(nama, kelas, nisn, kode_bayar, 'SPP', perhitunganNominalAkhir, petugas_input);
                     
                     //get data keuangan sekolah
-                    const getDataKeuanganSekolah = await laporanSppSiswaRepository.getDataKekuaranganPemasukan(kode_bayar);
+                    const getDataKeuanganSekolah = await laporanSppMysqlRepository.getDataKekuaranganPemasukan(kode_bayar);
                     const uang_sisa_kekurangan = parseFloat(getDataKeuanganSekolah.kekurangan_pemasukan);
                     const uang_masuk = parseFloat(getDataKeuanganSekolah.uang_masuk);
                     const perhitungan_sisa_kekurangan = uang_sisa_kekurangan - nominal;
                     const perhitungan_uang_masuk = uang_masuk + nominal;
-                    await laporanSppSiswaRepository.updateDataKekuranganPemasukan(kelas, kode_bayar, 'SPP', perhitungan_uang_masuk, perhitungan_sisa_kekurangan);
+                    await laporanSppMysqlRepository.updateDataKekuranganPemasukan(kelas, kode_bayar, 'SPP', perhitungan_uang_masuk, perhitungan_sisa_kekurangan);
                 }
             }
         }
@@ -94,7 +95,7 @@ async function inputPembayaran(req){
 async function getHistoryPembayaranSppNew(req){
     try {
         const {page, pageSize} = req.query;
-        const dataHistoryPembayaranSppNew = laporanSppSiswaRepository.getHistoryPembayaranSppNew(page, pageSize);
+        const dataHistoryPembayaranSppNew = laporanSppMysqlRepository.getHistoryPembayaranSppNew(page, pageSize);
         return dataHistoryPembayaranSppNew;
     } catch (error) {
         console.error('Error in service method get history pembayaran new', error)

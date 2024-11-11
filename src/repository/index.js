@@ -4,3 +4,5 @@ module.exports.laporanPembayaranPraktikumRepository = require('./laporanPembayar
 module.exports.laporanPpdbSiswaRepository = require('./laporanPpdbSiswa.repository');
 module.exports.kekuranganPembayaranRepository = require('./kekuranganPembayaranSiswa.repository');
 module.exports.dataIndukMysqlRepository = require('./mysql/dataInduk.repository');
+module.exports.laporanSppMysqlRepository = require('./mysql/laporanSppSiswa.repository');
+module.exports.kekuranganPembayaranMysqlRepository = require('./mysql/kekuranganPembayaranSiswa.repository');

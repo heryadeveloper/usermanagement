@@ -270,7 +270,11 @@ module.exports = (sequelize,  DataTypes)=> {
             bulan_masuk:{
                 type:DataTypes.STRING,
                 allowNull:true,
-            }
+            },
+            tahun_masuk:{
+                type:DataTypes.STRING,
+                allowNull:true,
+            },
         },{
             tableName:'data_induk'
         }

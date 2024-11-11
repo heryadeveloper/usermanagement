@@ -68,6 +68,17 @@ async function listKelasX(req) {
     }
 }
 
+async function getAllKelas(req) {
+    try {
+        const {tahun_ajaran} = req.query;
+        const data = await dataIndukMysqlRepository.getListAll(tahun_ajaran);
+        return data;
+    } catch (error) {
+        console.error('Error get data kelas : ', error);
+        throw error;
+    }
+}
+
 
 module.exports = {
     listSiswa,
@@ -75,5 +86,6 @@ module.exports = {
     naikKelas,
     getListKelasDet,
     getListNamaSiswa,
-    listKelasX
+    listKelasX,
+    getAllKelas
 }

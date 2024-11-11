@@ -1,20 +1,15 @@
 
-async function getTahunAjaran(){
-    const currentDate = new Date();
-    const currentMonth = currentDate.getMonth(); // getMonth() returns 0 for January, 1 for February, ..., 6 for July, etc.
-    const currentYear = currentDate.getFullYear();
+async function getTahunAjaran(req){
+    const {tahun} = req.query;
+    let tahuns = tahun ? parseInt(tahun, 10) : new Date().getFullYear();
 
-    let schoolYearStart;
-    let schoolYearEnd;
-
-     // Determine the school year
-    if (currentMonth >= 6) { // 6 is July
-        schoolYearStart = currentYear;
-        schoolYearEnd = currentYear + 1;
-    } else {
-        schoolYearStart = currentYear - 1;
-        schoolYearEnd = currentYear;
+    if (isNaN(tahuns)) {
+        // Jika `tahun` bukan angka yang valid, gunakan tahun saat ini.
+        tahuns = new Date().getFullYear();
     }
+    const schoolYearStart = tahuns;
+    const schoolYearEnd = tahuns + 1;
+
     const responseInfo = {
         schoolYearStart,
         schoolYearEnd,

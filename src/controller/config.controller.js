@@ -4,7 +4,7 @@ const responseInfo = require("../utils/responseInfo");
 
 const getTahunAjaran = catchAsync(async(req, res) =>{
     try {
-        const tahunAjaran = await configService.getTahunAjaran();
+        const tahunAjaran = await configService.getTahunAjaran(req);
         res.send(responseInfo('Success get data', tahunAjaran));
     } catch (error) {
         console.error('Error parsing data');
