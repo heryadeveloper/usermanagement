@@ -1,4 +1,4 @@
-const { Op } = require('sequelize');
+const { Op, QueryTypes } = require('sequelize');
 const db = require('../../db/modelsmysql');
 const {sequelize} = require('../../db/modelsmysql');
 
@@ -216,6 +216,27 @@ async function getListAll(tahun_ajaran){
     }
 }
 
+async function getDataGuru(){
+    try {
+        const result = await db.sequelize.query(`
+            SELECT 
+            a.nama ,
+            a.role_name ,
+            b.alamat ,
+            b.tahun_masuk 
+            FROM account_guru_karyawan a
+            join data_guru_karyawan b on 
+            a.id_role = b.id_role `,
+            {
+            type: QueryTypes.SELECT
+        });
+        return result;
+    } catch (error) {
+        console.error('Error when get data', error);
+        throw error;
+    }
+}
+
 
 
 module.exports = {
@@ -227,5 +248,6 @@ module.exports = {
     getListAllKelasXI,
     getListDataSiswa,
     getListAllKelasX,
-    getListAll
+    getListAll,
+    getDataGuru
 }

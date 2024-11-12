@@ -7,6 +7,7 @@ const router = express.Router();
 
 const routes = [
     { path: '/kenaikanKelas', method: 'post', validation: dataValidation.updateKenaikanKelas, handler: dataController.dataKenaikanKelas},
+    { path: '/listGuru', method: 'get', handler: dataController.dataGuru},
 ]
 
 routes.forEach(route => {

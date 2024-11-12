@@ -1,3 +1,4 @@
+const { dataIndukMysqlRepository } = require("../repository");
 const { siswaService } = require("../service");
 const catchAsync = require("../utils/catchAsync");
 const expectationFailed = require("../utils/errorExpectationFailed");
@@ -13,7 +14,17 @@ const dataKenaikanKelas = catchAsync(async(req, res) => {
     }
 })
 
+const dataGuru = catchAsync(async(req, res) => {
+    const dataGuruList = await dataIndukMysqlRepository.getDataGuru();
+
+    if (dataGuruList.length > 0) {
+        res.send(responseInfo('Success get data guru', dataGuruList));
+    } else {
+        res.send(expectationFailed('Something when wrong', null));
+    }
+})
 
 module.exports = {
     dataKenaikanKelas,
+    dataGuru
 }
