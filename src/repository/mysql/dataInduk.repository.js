@@ -226,7 +226,8 @@ async function getDataGuru(){
             b.tahun_masuk 
             FROM account_guru_karyawan a
             join data_guru_karyawan b on 
-            a.id_role = b.id_role `,
+            a.id_role = b.id_role
+            and a.kode_guru = b.kode_guru`,
             {
             type: QueryTypes.SELECT
         });
