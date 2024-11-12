@@ -132,7 +132,7 @@ async function getBulanBelumBayar(nisn, kelas, tahunAjaranBaru) {
             ap.tahun_ajaran 
         FROM all_periods ap
         LEFT JOIN (
-            SELECT bulan_bayar, CAST(tahun_bayar AS INTEGER) AS tahun_bayar
+            SELECT bulan_bayar, CAST(tahun_bayar AS UNSIGNED) AS tahun_bayar
             FROM laporan_spp_siswa
             WHERE kelas = :kelas AND nisn = :nisn
         ) lss
