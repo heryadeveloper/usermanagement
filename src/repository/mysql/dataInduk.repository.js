@@ -223,7 +223,8 @@ async function getDataGuru(){
             a.nama ,
             a.role_name ,
             b.alamat ,
-            b.tahun_masuk 
+            b.tahun_masuk, 
+            b.sex jenis_kelamin 
             FROM account_guru_karyawan a
             join data_guru_karyawan b on 
             a.id_role = b.id_role
