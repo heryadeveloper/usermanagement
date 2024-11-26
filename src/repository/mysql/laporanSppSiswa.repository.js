@@ -154,13 +154,14 @@ async function getBulanBelumBayar(nisn, kelas, tahunAjaranBaru) {
 }
 
 // step input pembayaran
-async function getKodePembayaran(kelas){
+async function getKodePembayaran(kelas, tahun_ajaran){
     const kelas_split = kelas.split(' ')[0];
 
     const getKodeBayar = await db.jenis_pembayaran.findAll({
         where: {
             jenis_transaksi: 'SPP',
             kelas: kelas_split,
+            tahun_ajaran: tahun_ajaran
         },
         attributes:['kode_pembayaran', 'nominal_bulan', 'nominal_total'],
         raw: true
@@ -223,7 +224,7 @@ async function getCountKekuranganPembayaranSiswa(nisn, kode_bayar){
 
 async function getDataKekuaranganPemasukan(kode_pembayaran){
     try {
-        const dataKekuranganPemasukan = await db.data_keuangan_sekolah_kelas.findOne({
+        const dataKekuranganPemasukan = await db.data_keuangan_skolah_kelas.findOne({
             where:{kode_pembayaran},
             order: [['created_date', 'DESC']],
         });
@@ -238,7 +239,7 @@ async function updateDataKekuranganPemasukan(kelas, kode_pembayaran, jenis_pemba
     try {
         const kelas_split = kelas.split(' ')[0];
 
-        const existingData = await db.data_keuangan_sekolah_kelas.findOne({
+        const existingData = await db.data_keuangan_skolah_kelas.findOne({
             where: {
                 kelas: kelas_split,
                 kode_pembayaran: kode_pembayaran,
@@ -281,23 +282,20 @@ async function validasiBulanBayar(nisn, bulan_bayar, tahun_ajaran){
 }
 // end step input pembayaran
 
-async function nilaiKekuranganPembayaran(nisn){
+async function nilaiKekuranganPembayaran(nisn, kelas){
     try {
-        const query = `SELECT 
-            (a.nominal_total - SUM(b.nominal_bulan)) AS perhitungan
-        FROM 
-            jenis_pembayaran a
-        JOIN 
-            laporan_spp_siswa b
-        ON 
-            a.kode_pembayaran = b.kode_bayar 
-        WHERE 
-            b.nisn = :nisn
-        GROUP BY 
-            a.nominal_total;`;
-        
+        const query = `SELECT jp.nominal_bulan, jp.kode_pembayaran, jp.nominal_total , lss.nama_siswa, 
+                        (jp.nominal_total - sum(lss.nominal_bulan)) as perhitungan_baya
+                        FROM jenis_pembayaran jp
+                        JOIN laporan_spp_siswa lss 
+                            ON jp.tahun_ajaran = lss.tahun_bayar 
+                        AND jp.jenis_transaksi = lss.jenis_transaksi
+                        and jp.kelas = left (lss.kelas, locate(' ', lss.kelas) - 1)
+                        WHERE lss.nisn = :nisn
+                        and lss.kelas = :kelas`;
+                                
         const responseData = await db.sequelize.query(query, {
-            replacements: {nisn},
+            replacements: {nisn, kelas},
             type: db.Sequelize.QueryTypes.SELECT,
         });
 
@@ -336,6 +334,43 @@ async function getHistoryPembayaranSppNew(page, pageSize){
         throw error;
     }
 }
+
+async function jenisPembayaran(tahun_ajaran){
+    try {
+        const query = `select * from jenis_pembayaran jp 
+            where jp.tahun_ajaran = :tahun_ajaran
+            and jp.jenis_transaksi not in ('SPP') `;
+                                
+        const responseData = await db.sequelize.query(query, {
+            replacements: {tahun_ajaran},
+            type: db.Sequelize.QueryTypes.SELECT,
+        });
+
+        return responseData;
+    } catch (error) {
+        console.error('Error get data nilai kekurangan pembayaran ', error);
+        throw error;
+    }
+}
+
+async function jenisPembayaranPaymentUsingJenisTransaksi(tahun_ajaran, jenis_transaksi) {
+    try {
+        const query =   `select * from jenis_pembayaran jp
+                        where jp.tahun_ajaran = :tahun_ajaran
+                        and jp.jenis_transaksi = :jenis_transaksi
+                        and jp.jenis_transaksi not in ('SPP')`;
+        const responseData = await db.sequelize.query(query, {
+            replacements: {tahun_ajaran, jenis_transaksi},
+            type: db.Sequelize.QueryTypes.SELECT,
+        });
+
+        return responseData;
+    } catch (error) {
+        console.error('Error get payment ', error);
+        throw error;
+    }
+}
+
 module.exports = {
     getDataSpp,
     getDataSppByNisn,
@@ -348,5 +383,7 @@ module.exports = {
     updateDataKekuranganPemasukan,
     validasiBulanBayar,
     nilaiKekuranganPembayaran,
-    getHistoryPembayaranSppNew
+    getHistoryPembayaranSppNew,
+    jenisPembayaran,
+    jenisPembayaranPaymentUsingJenisTransaksi
 }

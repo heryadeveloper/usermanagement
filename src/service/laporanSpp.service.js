@@ -17,9 +17,9 @@ async function getDataSpp(req){
 
 async function getDataSppByNisn(req){
     try {
-        const { nisn } = req.query;
+        const { nisn, kelas } = req.query;
         const getDataSppByNisns = await laporanSppMysqlRepository.getDataSppByNisn(nisn);
-        const nilaiKekuranganSiswa = await laporanSppMysqlRepository.nilaiKekuranganPembayaran(nisn);
+        const nilaiKekuranganSiswa = await laporanSppMysqlRepository.nilaiKekuranganPembayaran(nisn, kelas);
         return {
             dataSpp: getDataSppByNisns,
             nilaiKekurangan: nilaiKekuranganSiswa,
@@ -33,7 +33,6 @@ async function getDataSppByNisn(req){
 async function getBulanBelumBayar(req){
     try {
         const { nisn, kelas, tahunAjaran} = req.query;
-        // const getDataBulan = laporanSppSiswaRepository.getBulanBelumBayar(nisn, kelas, tahunAjaran);
         const getDataBulan = laporanSppMysqlRepository.getBulanBelumBayar(nisn, kelas, tahunAjaran);
         return getDataBulan;
     } catch (error) {
@@ -45,7 +44,7 @@ async function getBulanBelumBayar(req){
 async function inputPembayaran(req){
     const {nama, nisn, kelas, nominal, periode, petugas_input, tahun_ajaran, tanggal_bayar, bulan} = req.body;
     try {
-        const findKodePembayaran = await laporanSppMysqlRepository.getKodePembayaran(kelas);
+        const findKodePembayaran = await laporanSppMysqlRepository.getKodePembayaran(kelas, tahun_ajaran);
         const kode_bayar = findKodePembayaran[0].kode_pembayaran;
         console.log('kode bayar ', kode_bayar);
         for(const datas of bulan){
@@ -103,10 +102,22 @@ async function getHistoryPembayaranSppNew(req){
     }
 }
 
+async function getJenisPembayaran(req){
+    const {tahun_ajaran} = req.query;
+    try {
+        const jenisPembayaran = laporanSppMysqlRepository.jenisPembayaran(tahun_ajaran);
+        return jenisPembayaran;
+    }catch (error){
+        console.error('Error in service method get jenis pembayaran ', error);
+        throw error;
+    }
+}
+
 module.exports = {
     getDataSpp,
     getDataSppByNisn,
     getBulanBelumBayar,
     inputPembayaran,
-    getHistoryPembayaranSppNew
+    getHistoryPembayaranSppNew,
+    getJenisPembayaran
 }

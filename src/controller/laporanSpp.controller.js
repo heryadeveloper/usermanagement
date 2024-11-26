@@ -48,10 +48,24 @@ const getDataHistoryPembayaranSpp = catchAsync(async(req, res) => {
     }
 })
 
+const getJenisPembayaran = catchAsync(async(req, res) => {
+    try {
+        const jenisbayar = await laporanSppService.getJenisPembayaran(req);
+        if (jenisbayar) {
+            res.send(responseInfo('Success Get Jenis Pembayaran', jenisbayar))
+        } else {
+            res.send(expectationFailed('Something Error', null));
+        }
+    } catch (error) {
+        res.send(errorExpectationFailed('Data not Found', null));
+    }
+})
+
 module.exports = {
     getDataSpp,
     getDataSppByNisn,
     getBulanBelumBayar,
     inputPembayaran,
-    getDataHistoryPembayaranSpp
+    getDataHistoryPembayaranSpp,
+    getJenisPembayaran
 }

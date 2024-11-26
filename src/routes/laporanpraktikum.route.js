@@ -2,6 +2,7 @@ const express = require('express');
 const validate = require('../middleware/validate');
 const { laporanPraktikumController } = require('../controller');
 const { laporanBayarPraktikumValidation } = require('../utils');
+const { dataValidation } = require('../validation/index');
 
 const router = express.Router();
 
@@ -10,6 +11,8 @@ const routes = [
     { path: '/historyBayarPraktikum', method:'get', handler: laporanPraktikumController.getHistoryPembayaranPraktikumByNisn},
     { path: '/addBayarPraktikum', method: 'post', validation: laporanBayarPraktikumValidation.inputBayarPraktikumSiswa, handler:laporanPraktikumController.addBayarPraktikum },
     { path: '/historyPraktikum', method: 'get', handler: laporanPraktikumController.getDataHistoryPembayaranPraktikumNew },
+    { path: '/addPaymentInstruction', method: 'post', validation: dataValidation.addPaymentInstruction , handler: laporanPraktikumController.addPaymentSiswa},
+    { path: '/historyPaymentSiswa', method: 'get', handler: laporanPraktikumController.getHistoryPaymentSiswa}
 ];
 
 routes.forEach(route => {

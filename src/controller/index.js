@@ -4,3 +4,4 @@ module.exports.laporanPraktikumController = require('../controller/laporBayarPra
 module.exports.laporanPpdbController = require('../controller/laporanPpdb.controller');
 module.exports.configController = require('../controller/config.controller');
 module.exports.dataController = require('../controller/data.controller');
+module.exports.ppdbController = require('../controller/ppdb.controller');

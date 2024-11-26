@@ -87,6 +87,16 @@ const listNamaSiswa = catchAsync(async(req, res) => {
         res.send(errorExpectationFailed('Data Not Found', null));
     }
 })
+
+const downloadPdf = catchAsync(async(req, res) => {
+    try {
+        await siswaService.downloadPdf(req, res); // Streaming PDF
+    } catch (error) {
+        res.send(errorExpectationFailed('Gagal mendownload PDF', null));
+    }
+})
+
+
 module.exports = {
     getDataSiswaInRombel,
     getListAllKelas,
@@ -96,5 +106,6 @@ module.exports = {
     getKelas,
     listKelas,
     listKelasDet,
-    listNamaSiswa
+    listNamaSiswa,
+    downloadPdf
 }

@@ -239,6 +239,22 @@ async function getDataGuru(){
     }
 }
 
+async function getDataPpdb(nisn){
+    try {
+        const dataPpdb = await db.ppdb_smknu.findOne({
+            where:{
+                nisn
+            },
+            raw: true,
+        });
+        return dataPpdb;
+    } catch (error) {
+        console.error('Error when get proccesing data', error);
+        throw error;
+    }
+}
+
+
 
 
 module.exports = {
@@ -251,5 +267,6 @@ module.exports = {
     getListDataSiswa,
     getListAllKelasX,
     getListAll,
-    getDataGuru
+    getDataGuru,
+    getDataPpdb
 }

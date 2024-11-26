@@ -11,6 +11,7 @@ const routes = [
     { path: '/bulanKosong', method: 'get', handler: laporanSppController.getBulanBelumBayar},
     { path: '/addPembayaranSpp', method: 'post', validation: laporanSppSiswaValidation.inputPembayaran, handler: laporanSppController.inputPembayaran},
     { path: '/gethistoryBayarSppNew', method: 'get', handler: laporanSppController.getDataHistoryPembayaranSpp},
+    { path: '/getJenisBayar', method: 'get', handler: laporanSppController.getJenisPembayaran}
 ];
 
 routes.forEach(route => {

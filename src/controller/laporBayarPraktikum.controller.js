@@ -39,9 +39,29 @@ const getDataHistoryPembayaranPraktikumNew = catchAsync(async(req, res) => {
     }
 })
 
+const addPaymentSiswa = catchAsync(async(req, res) => {
+    const addPaymentInstruction = await laporanPraktikumService.insertPaymentSiswa(req);
+    if (addPaymentInstruction) {
+        res.send(responseInfo('Success Bayar', addPaymentInstruction));
+    } else {
+        res.send(expectationFailed('Something Error', null));
+    }
+})
+
+const getHistoryPaymentSiswa = catchAsync(async(req, res) => {
+    const getHistoryPaymentSiswaByNisn = await laporanPraktikumService.historyPaymentSiswaByNisn(req);
+    if (getHistoryPaymentSiswaByNisn) {
+        res.send(responseInfo('Success get data history', getHistoryPaymentSiswaByNisn));
+    }else {
+        res.send(expectationFailed('Something error', null));
+    }
+})
+
 module.exports = {
     getDataBayarPraktikum,
     getHistoryPembayaranPraktikumByNisn,
     addBayarPraktikum,
-    getDataHistoryPembayaranPraktikumNew
+    getDataHistoryPembayaranPraktikumNew,
+    addPaymentSiswa,
+    getHistoryPaymentSiswa
 }

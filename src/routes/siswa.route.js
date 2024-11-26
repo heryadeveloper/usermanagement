@@ -14,7 +14,8 @@ const routes = [
     { path: '/kelas', method: 'get', handler: siswaController.getKelas},
     { path: '/listKelas', method: 'get', handler: siswaController.listKelas},
     { path: '/listKelasTahunAjaran', method: 'get', handler: siswaController.listKelasDet},
-    { path: '/listNamaSiswa', method: 'get', handler: siswaController.listNamaSiswa}
+    { path: '/listNamaSiswa', method: 'get', handler: siswaController.listNamaSiswa},
+    { path: '/download-bukti', method: 'get', handler: siswaController.downloadPdf}
 ];
 
 routes.forEach(route => {

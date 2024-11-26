@@ -37,6 +37,10 @@ module.exports = (sequelise, DataTypes) =>{
                 type: DataTypes.DATE,
                 allowNull: true,
             },
+            tahun_ajaran: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            }
         }, {
             tableName:'jenis_pembayaran'
         }
