@@ -17,9 +17,9 @@ async function getDataSpp(req){
 
 async function getDataSppByNisn(req){
     try {
-        const { nisn, kelas } = req.query;
+        const { nisn, kelas, tahun_ajaran, jenis_transaksi } = req.query;
         const getDataSppByNisns = await laporanSppMysqlRepository.getDataSppByNisn(nisn);
-        const nilaiKekuranganSiswa = await laporanSppMysqlRepository.nilaiKekuranganPembayaran(nisn, kelas);
+        const nilaiKekuranganSiswa = await laporanSppMysqlRepository.nilaiKekuranganPembayaran(nisn, kelas, tahun_ajaran, jenis_transaksi);
         return {
             dataSpp: getDataSppByNisns,
             nilaiKekurangan: nilaiKekuranganSiswa,

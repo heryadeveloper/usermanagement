@@ -282,20 +282,38 @@ async function validasiBulanBayar(nisn, bulan_bayar, tahun_ajaran){
 }
 // end step input pembayaran
 
-async function nilaiKekuranganPembayaran(nisn, kelas){
+async function nilaiKekuranganPembayaran(nisn, kelas, tahun_ajaran, jenis_transaksi){
     try {
-        const query = `SELECT jp.nominal_bulan, jp.kode_pembayaran, jp.nominal_total , lss.nama_siswa, 
+        const query = `SELECT jp.nominal_bulan, jp.kode_pembayaran, jp.nominal_total, lss.nama_siswa,
                         (jp.nominal_total - sum(lss.nominal_bulan)) as perhitungan_baya
                         FROM jenis_pembayaran jp
                         JOIN laporan_spp_siswa lss 
                             ON jp.tahun_ajaran = lss.tahun_bayar 
                         AND jp.jenis_transaksi = lss.jenis_transaksi
-                        and jp.kelas = left (lss.kelas, locate(' ', lss.kelas) - 1)
+                        AND jp.kelas = LEFT(lss.kelas, LOCATE(' ', lss.kelas) - 1)
                         WHERE lss.nisn = :nisn
-                        and lss.kelas = :kelas`;
+                        AND lss.kelas = :kelas
+                        GROUP BY jp.nominal_bulan, jp.kode_pembayaran, jp.nominal_total, lss.nama_siswa
+
+                        UNION ALL
+
+                        SELECT jp.nominal_bulan, jp.kode_pembayaran, jp.nominal_total, NULL as nama_siswa, NULL as perhitungan_baya
+                        FROM jenis_pembayaran jp
+                        WHERE NOT EXISTS (
+                            SELECT 1
+                            FROM laporan_spp_siswa lss
+                            WHERE jp.tahun_ajaran = lss.tahun_bayar
+                            AND jp.jenis_transaksi = lss.jenis_transaksi
+                            AND jp.kelas = LEFT(lss.kelas, LOCATE(' ', lss.kelas) - 1)
+                            AND lss.nisn = :nisn
+                            AND lss.kelas = :kelas
+                        )
+                        AND jp.tahun_ajaran = :tahun_ajaran
+                        AND jp.kelas = LEFT(:kelas, LOCATE(' ', :kelas) - 1)
+                        AND jp.jenis_transaksi = :jenis_transaksi`;
                                 
         const responseData = await db.sequelize.query(query, {
-            replacements: {nisn, kelas},
+            replacements: {nisn, kelas, tahun_ajaran, jenis_transaksi},
             type: db.Sequelize.QueryTypes.SELECT,
         });
 
