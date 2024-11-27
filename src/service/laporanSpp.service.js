@@ -60,7 +60,7 @@ async function inputPembayaran(req){
             
                 const countData = await laporanSppMysqlRepository.getCountKekuranganPembayaranSiswa(nisn, kode_bayar);
                 // insert table bayar spp
-                await laporanSppMysqlRepository.insertPembayaranSpp(nama, kelas, nisn, kode_bayar, nominal_bayar, bulan_bayar, petugas_input, tahun_ajaran);
+                await laporanSppMysqlRepository.insertPembayaranSpp(nama, kelas, nisn, kode_bayar, nominal_bayar, bulan_bayar, petugas_input, tanggal_bayar, tahun_ajaran);
                 if (countData === 0) {
                     const perhitungan = findKodePembayaran[0].nominal_total - nominal_bayar;
                     await kekuranganPembayaranMysqlRepository.insertTableKekuranganPembayaranSiswa(nama, kelas, nisn, kode_bayar, 'SPP', perhitungan, petugas_input);

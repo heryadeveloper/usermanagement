@@ -169,14 +169,14 @@ async function getKodePembayaran(kelas, tahun_ajaran){
     return getKodeBayar;
 }
 
-async function insertPembayaranSpp(nama, kelas, nisn, kode_bayar, nominal, bulan_bayar, petugas_input, tahun_ajaran){
+async function insertPembayaranSpp(nama, kelas, nisn, kode_bayar, nominal, bulan_bayar, petugas_input, tanggal_bayar, tahun_ajaran){
     try {
         await db.laporan_spp_siswa.create({
             nama_siswa: nama,
             kelas,
             nisn,
             bulan_bayar,
-            tanggal_bayar: new Date,
+            tanggal_bayar,
             kode_bayar,
             jenis_transaksi: 'SPP',
             nominal_bulan: nominal,
