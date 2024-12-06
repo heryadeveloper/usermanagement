@@ -254,6 +254,70 @@ async function getDataPpdb(nisn){
     }
 }
 
+async function getDataFormPpdb(nisn) {
+    try {
+        const dataFormPpdb = `
+            select
+                ps.id ,
+                nama_lengkap ,
+                nisn ,
+                nik ,
+                concat(tempat_lahir,', ' , DATE_FORMAT(tanggal_lahir, '%Y-%m-%d')) ttl,
+                case
+                    when jenis_kelamin = 0
+                    then 'Perempuan'
+                    else 'Laki-laki'
+                end as jenis,
+                a.agama,
+                concat(ps.desa_kelurahan,' ',ps.rt,'/',ps.rw,', ', ps.kecamatan,', ', ps.kabupaten,' ', ps.kode_pos) alamat,
+                ps.no_wa ,
+                ps.email ,
+                ps.asal_sekolah ,
+                ps.tahun_kelulusan ,
+                ps.nama_ayah ,
+                ps.pekerjaan_ayah ,
+                ps.nama_ibu ,
+                ps.pekerjaan_ibu ,
+                ps.nama_wali ,
+                ps.pekerjaan_wali ,
+                ps.no_hp_orang_tua,
+                ps.program_jurusan_yang_diminati
+                from ppdb_smknu ps
+                join agama a 
+                    on ps.agama = a.id_agama 
+                where ps.nisn = :nisn`;
+            const responseData = await db.sequelize.query(dataFormPpdb, {
+                replacements: {nisn},
+                type: db.Sequelize.QueryTypes.SELECT,
+            });
+            return {
+                responseData
+            };
+    } catch (error) {
+        console.error('Error get data');
+        throw error;
+    }
+}
+
+async function getDataSiswaPPDB() {
+    try {
+        const query = `select 
+            id,
+            nama_lengkap ,
+            nisn,
+            asal_sekolah ,
+            no_wa 
+            from smknutulis.ppdb_smknu`;
+        const responseData = await db.sequelize.query(query, {
+            type: db.Sequelize.QueryTypes.SELECT,
+        });
+        return responseData;
+    } catch (error) {
+        console.error('Error get data');
+        throw error;
+    }
+}
+
 
 
 
@@ -268,5 +332,7 @@ module.exports = {
     getListAllKelasX,
     getListAll,
     getDataGuru,
-    getDataPpdb
+    getDataPpdb,
+    getDataFormPpdb,
+    getDataSiswaPPDB
 }

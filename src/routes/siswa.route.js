@@ -15,7 +15,10 @@ const routes = [
     { path: '/listKelas', method: 'get', handler: siswaController.listKelas},
     { path: '/listKelasTahunAjaran', method: 'get', handler: siswaController.listKelasDet},
     { path: '/listNamaSiswa', method: 'get', handler: siswaController.listNamaSiswa},
-    { path: '/download-bukti', method: 'get', handler: siswaController.downloadPdf}
+    { path: '/download-bukti', method: 'get', handler: siswaController.downloadPdf},
+    { path: '/download-formulir-ppdb', method: 'get', handler: siswaController.downloadFormulirPpdb},
+    { path: '/getDataSiswaPPDB', method: 'get', handler: siswaController.getDataSiswaPPDB},
+    { path: '/generateExcel', method: 'get', handler: siswaController.generateExcel}
 ];
 
 routes.forEach(route => {

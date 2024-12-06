@@ -3,6 +3,8 @@ const {siswaService} = require('../service');
 const responseInfo = require('../utils/responseInfo');
 const errorExpectationFailed = require('../utils/errorExpectationFailed');
 const { dataIndukRepository, dataIndukMysqlRepository } = require('../repository');
+const express = require('express');
+const expectationFailed = require('../utils/errorExpectationFailed');
 
 const getDataSiswaInRombel = catchAsync(async(req, res) => {
     const listSiswa =await siswaService.listSiswa(req);
@@ -96,6 +98,35 @@ const downloadPdf = catchAsync(async(req, res) => {
     }
 })
 
+const downloadFormulirPpdb = catchAsync(async(req, res) => {
+    try{
+        await siswaService.downloadFormPpdb(req, res);
+    }catch (error){
+        res.send(errorExpectationFailed('Gagal Download Formulir PPDB', null));
+    }
+})
+
+const getDataSiswaPPDB = catchAsync(async(req, res) => {
+    try{
+        const dataSiswaPPDB = await siswaService.getDataSiswaPPDB();
+        if (dataSiswaPPDB) {
+            res.send(responseInfo('Success Get Data Siswa PPDB', dataSiswaPPDB));
+        } else {
+            res.send(expectationFailed('Cannot Get data siswa PPDB', null));
+        }
+    }catch (error){
+        res.send(errorExpectationFailed('Internal Service Error', null));
+    }
+})
+
+const generateExcel =  catchAsync(async(req, res)=> {
+    try {
+        await siswaService.generateExcel(res);
+    } catch (error) {
+        res.send(errorExpectationFailed('Internal Service Error', null))
+    }
+})
+
 
 module.exports = {
     getDataSiswaInRombel,
@@ -107,5 +138,7 @@ module.exports = {
     listKelas,
     listKelasDet,
     listNamaSiswa,
-    downloadPdf
+    downloadPdf, downloadFormulirPpdb,
+    getDataSiswaPPDB,
+    generateExcel
 }
