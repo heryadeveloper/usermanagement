@@ -306,8 +306,8 @@ async function getDataSiswaPPDB() {
             nama_lengkap ,
             nisn,
             asal_sekolah ,
-            no_wa 
-            from smknutulis.ppdb_smknu`;
+            no_wa
+            from ppdb_smknu`;
         const responseData = await db.sequelize.query(query, {
             type: db.Sequelize.QueryTypes.SELECT,
         });
