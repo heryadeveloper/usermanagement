@@ -318,6 +318,19 @@ async function getDataSiswaPPDB() {
     }
 }
 
+async function getDataSiswaPPDBForGenerateExcel() {
+    try {
+        const query = `select *
+            from ppdb_smknu`;
+        const responseData = await db.sequelize.query(query, {
+            type: db.Sequelize.QueryTypes.SELECT,
+        });
+        return responseData;
+    } catch (error) {
+        console.error('Error get data');
+        throw error;
+    }
+}
 
 
 
@@ -334,5 +347,6 @@ module.exports = {
     getDataGuru,
     getDataPpdb,
     getDataFormPpdb,
-    getDataSiswaPPDB
+    getDataSiswaPPDB,
+    getDataSiswaPPDBForGenerateExcel
 }

@@ -4,6 +4,7 @@ const path = require('path');
 const moment = require('moment');
 const ExcelJs = require('exceljs');
 const fs = require('fs');
+const { v4: uuidv4 } = require('uuid');
 
 async function listSiswa(req){
     const {rombel_saat_ini} = req.query;
@@ -387,6 +388,7 @@ async function downloadFormPpdb(req, res) {
 async function getDataSiswaPPDB() {
     try {
         const dataSiswaPPDB = await dataIndukMysqlRepository.getDataSiswaPPDB();
+        // const dataSiswaPPDB = await dataIndukMysqlRepository.getDataSiswaPPDBForGenerateExcel();
         return dataSiswaPPDB;
     } catch (error) {
         console.error('Error in service get Data Siswa PPDB');
@@ -419,7 +421,13 @@ async function generateExcel(res) {
             highlight: "red", // warna baris
             },
         ];
+    const dataSiswaPPDB = await dataIndukMysqlRepository.getDataSiswaPPDBForGenerateExcel();
     try {
+        // Buat UUID unik
+        const uniqueId = uuidv4();
+
+        // Tentukan nama file dengan UUID
+        const filename = `Generate_ppdb_${uniqueId}.xlsx`;
         const workbook = new ExcelJs.Workbook();
         const worksheet = workbook.addWorksheet('Data PPDB');
     
@@ -514,43 +522,77 @@ async function generateExcel(res) {
 
          // Tambahkan header
         worksheet.columns = [
-            { header: "Nama Ayah", key: "namaAyah", width: 20 },
-            { header: "Pekerjaan Ayah", key: "pekerjaanAyah", width: 20 },
-            { header: "Nama Ibu", key: "namaIbu", width: 20 },
-            { header: "Pekerjaan Ibu", key: "pekerjaanIbu", width: 20 },
-            { header: "Nama Wali", key: "namaWali", width: 20 },
-            { header: "Pekerjaan Wali", key: "pekerjaanWali", width: 20 },
-            { header: "No HP Orang Tua/Wali", key: "noHP", width: 20 },
-            { header: "Program Jurusan Yang Diminati", key: "jurusan", width: 30 },
+            { header: "No", key: "id", width: 3 },
+            { header: "Nama Lengkap", key: "nama_lengkap", width: 20 },
+            { header: "Nisn", key: "nisn", width: 10 },
+            { header: "Asal Sekolah", key: "asal_sekolah", width: 20 },
+            { header: "Tahun Kelulusan", key: "tahun_kelulusan", width: 5 },
+            { header: "NIK", key: "nik", width: 20 },
+            { header: "Tempat Lahir", key: "tempat_lahir", width: 20 },
+            { header: "Tanggal Lahir", key: "tanggal_lahir", width: 20 },
+            { header: "Alamat", key: "alamat", width: 60 },
+            { header: "RT", key: "rt", width: 4},
+            { header: "RW", key: "rw", width: 4 },
+            { header: "Desa Kelurahan", key: "desa_kelurahan", width: 60 },
+            { header: "Kecamatan", key: "kecamatan", width: 60 },
+            { header: "Kabupaten", key: "kabupaten", width: 60 },
+            { header: "Kode Pos", key: "kode_pos", width: 10 },
+            { header: "Email", key: "email", width: 20 },
+            { header: "No Wa", key: "no_wa", width: 20 },
+            { header: "Nama Ayah", key: "nama_ayah", width: 20 },
+            { header: "Pekerjaan Ayah", key: "pekerjaan_ayah", width: 20 },
+            { header: "Nama Ibu", key: "nama_ibu", width: 20 },
+            { header: "Pekerjaan Ibu", key: "pekerjaan_ibu", width: 20 },
+            { header: "Nama Wali", key: "nama_wali", width: 20 },
+            { header: "Pekerjaan Wali", key: "pekerjaan_wali", width: 20 },
+            { header: "No Hp Orang Tua", key: "no_hp_orang_tua", width: 20 },
+            { header: "Program Jurusan Yang Diminati", key: "program_jurusan_yang_diminati", width: 60 },
         ];
 
-        datas.forEach((item) => {
+        // datas.forEach((item) => {
+        //     const row = worksheet.addRow(item);
+        //         if (item.highlight === "yellow") {
+        //         row.eachCell((cell) => {
+        //             cell.fill = {
+        //             type: "pattern",
+        //             pattern: "solid",
+        //             fgColor: { argb: "FFFF00" }, // warna kuning
+        //             };
+        //         });
+        //         } else if (item.highlight === "red") {
+        //         row.eachCell((cell) => {
+        //             cell.fill = {
+        //             type: "pattern",
+        //             pattern: "solid",
+        //             fgColor: { argb: "FF0000" }, // warna merah
+        //             };
+        //         });
+        //         }
+        //     });
+        dataSiswaPPDB.forEach((item) => {
             const row = worksheet.addRow(item);
-                if (item.highlight === "yellow") {
-                row.eachCell((cell) => {
-                    cell.fill = {
+            row.eachCell((cell) => {
+                cell.fill = {
                     type: "pattern",
                     pattern: "solid",
-                    fgColor: { argb: "FFFF00" }, // warna kuning
-                    };
-                });
-                } else if (item.highlight === "red") {
-                row.eachCell((cell) => {
-                    cell.fill = {
-                    type: "pattern",
-                    pattern: "solid",
-                    fgColor: { argb: "FF0000" }, // warna merah
-                    };
-                });
-                }
+                    fgColor: { argb: "FFFFFF"}
+                };
+
+                cell.border = {
+                    top: { style: "thin" },
+                    left: { style: "thin" },
+                    bottom: { style: "thin" },
+                    right: { style: "thin" },
+                };
             });
+        });
 
          // Mengirim file sebagai response
         res.setHeader(
             'Content-Type',
             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         );
-        res.setHeader('Content-Disposition', 'attachment; filename="Generate_ppdb.xlsx"');
+        res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
 
         await workbook.xlsx.write(res);
         res.end();
