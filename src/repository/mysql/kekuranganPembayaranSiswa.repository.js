@@ -26,8 +26,8 @@ async function getDataKekuranganPembayaran(nisn, tahun_ajaran){
                     a.kode_pembayaran,
                     MIN(a.kekurangan_pembayaran) AS min_kekurangan_pembayaran,
                     b.jenis_transaksi 
-                FROM smknutulis.kekurangan_pembayaran_siswa a
-                join smknutulis.jenis_pembayaran b
+                FROM kekurangan_pembayaran_siswa a
+                join jenis_pembayaran b
                 on a.kode_pembayaran = b.kode_pembayaran 
                 WHERE nisn = :nisn
                 and b.tahun_ajaran = :tahun_ajaran
