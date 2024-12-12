@@ -1,4 +1,4 @@
-const { dataIndukRepository, dataIndukMysqlRepository } = require("../repository");
+const { dataIndukRepository, dataIndukMysqlRepository, kekuranganPembayaranMysqlRepository } = require("../repository");
 const PDFDocument = require('pdfkit');
 const path = require('path');
 const moment = require('moment');
@@ -549,26 +549,6 @@ async function generateExcel(res) {
             { header: "Program Jurusan Yang Diminati", key: "program_jurusan_yang_diminati", width: 60 },
         ];
 
-        // datas.forEach((item) => {
-        //     const row = worksheet.addRow(item);
-        //         if (item.highlight === "yellow") {
-        //         row.eachCell((cell) => {
-        //             cell.fill = {
-        //             type: "pattern",
-        //             pattern: "solid",
-        //             fgColor: { argb: "FFFF00" }, // warna kuning
-        //             };
-        //         });
-        //         } else if (item.highlight === "red") {
-        //         row.eachCell((cell) => {
-        //             cell.fill = {
-        //             type: "pattern",
-        //             pattern: "solid",
-        //             fgColor: { argb: "FF0000" }, // warna merah
-        //             };
-        //         });
-        //         }
-        //     });
         dataSiswaPPDB.forEach((item) => {
             const row = worksheet.addRow(item);
             row.eachCell((cell) => {
@@ -603,6 +583,17 @@ async function generateExcel(res) {
     }
 }
 
+async function getKekuranganPembayaranSiswa(req) {
+    try {
+        const {nisn, tahun_ajaran} = req.query;
+        const dataSiswaPPDB = await kekuranganPembayaranMysqlRepository.getDataKekuranganPembayaran(nisn, tahun_ajaran);
+        return dataSiswaPPDB;
+    } catch (error) {
+        console.error('Error in service get Data Siswa PPDB');
+        throw error;
+    }
+}
+
 
 module.exports = {
     listSiswa,
@@ -615,5 +606,6 @@ module.exports = {
     downloadPdf,
     downloadFormPpdb,
     getDataSiswaPPDB,
-    generateExcel
+    generateExcel,
+    getKekuranganPembayaranSiswa
 }

@@ -18,7 +18,8 @@ const routes = [
     { path: '/download-bukti', method: 'get', handler: siswaController.downloadPdf},
     { path: '/download-formulir-ppdb', method: 'get', handler: siswaController.downloadFormulirPpdb},
     { path: '/getDataSiswaPPDB', method: 'get', handler: siswaController.getDataSiswaPPDB},
-    { path: '/generateExcel', method: 'get', handler: siswaController.generateExcel}
+    { path: '/generateExcel', method: 'get', handler: siswaController.generateExcel},
+    { path: '/kekuranganPembayaran', method: 'get', handler: siswaController.getKekuranganPembayaranSiswa}
 ];
 
 routes.forEach(route => {

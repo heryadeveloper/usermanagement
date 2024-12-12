@@ -127,6 +127,19 @@ const generateExcel =  catchAsync(async(req, res)=> {
     }
 })
 
+const getKekuranganPembayaranSiswa = catchAsync(async(req, res) => {
+    try{
+        const dataSiswaPPDB = await siswaService.getKekuranganPembayaranSiswa(req);
+        if (dataSiswaPPDB) {
+            res.send(responseInfo('Success Get Data Siswa PPDB', dataSiswaPPDB));
+        } else {
+            res.send(expectationFailed('Cannot Get data siswa PPDB', null));
+        }
+    }catch (error){
+        res.send(errorExpectationFailed('Internal Service Error', null));
+    }
+})
+
 
 module.exports = {
     getDataSiswaInRombel,
@@ -140,5 +153,6 @@ module.exports = {
     listNamaSiswa,
     downloadPdf, downloadFormulirPpdb,
     getDataSiswaPPDB,
-    generateExcel
+    generateExcel,
+    getKekuranganPembayaranSiswa
 }
