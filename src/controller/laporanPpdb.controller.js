@@ -8,7 +8,7 @@ const getDataPpdb = catchAsync(async(req, res) => {
     if (getDataPpdb) {
         res.send(responseInfo('Success get data ppdb', getDataPpdb));
     } else {
-        res.send(expectationFailed('Something Error', null));
+        res.send(expectationFailed.expectationFailed('Something Error', null));
     }
 })
 

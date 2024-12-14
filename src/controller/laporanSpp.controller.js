@@ -8,7 +8,7 @@ const getDataSpp = catchAsync(async(req, res) => {
     if (getData) {
         res.send(responseInfo('Success get data spp', getData));
     } else {
-        res.send(expectationFailed('Something Error', null));
+        res.send(expectationFailed.expectationFailed('Something Error', null));
     }
 })
 
@@ -17,7 +17,7 @@ const getDataSppByNisn = catchAsync(async(req, res) => {
     if (getData) {
         res.send(responseInfo('Success get data spp', getData));
     } else {
-        res.send(expectationFailed('Something Error', null));
+        res.send(expectationFailed.expectationFailed('Something Error', null));
     }
 })
 
@@ -26,7 +26,7 @@ const getBulanBelumBayar = catchAsync(async(req, res) => {
     if (getData) {
         res.send(responseInfo('Success get data spp', getData));
     } else {
-        res.send(expectationFailed('Something Error', null));
+        res.send(expectationFailed.expectationFailed('Something Error', null));
     }
 })
 
@@ -35,7 +35,7 @@ const inputPembayaran = catchAsync(async(req, res) => {
     if (inputBayar) {
         res.send(responseInfo('Success Transaksi Pembayaran', inputBayar));
     } else {
-        res.send(expectationFailed('Something Error', null));
+        res.send(expectationFailed.expectationFailed('Something Error', null));
     }
 })
 
@@ -44,7 +44,7 @@ const getDataHistoryPembayaranSpp = catchAsync(async(req, res) => {
     if (getHistory) {
         res.send(responseInfo('Success Get Data History', getHistory));
     } else {
-        res.send(expectationFailed('Something Error', null));
+        res.send(expectationFailed.expectationFailed('Something Error', null));
     }
 })
 
@@ -54,7 +54,7 @@ const getJenisPembayaran = catchAsync(async(req, res) => {
         if (jenisbayar) {
             res.send(responseInfo('Success Get Jenis Pembayaran', jenisbayar))
         } else {
-            res.send(expectationFailed('Something Error', null));
+            res.send(expectationFailed.expectationFailed('Something Error', null));
         }
     } catch (error) {
         res.send(errorExpectationFailed('Data not Found', null));

@@ -388,7 +388,6 @@ async function downloadFormPpdb(req, res) {
 async function getDataSiswaPPDB() {
     try {
         const dataSiswaPPDB = await dataIndukMysqlRepository.getDataSiswaPPDB();
-        // const dataSiswaPPDB = await dataIndukMysqlRepository.getDataSiswaPPDBForGenerateExcel();
         return dataSiswaPPDB;
     } catch (error) {
         console.error('Error in service get Data Siswa PPDB');

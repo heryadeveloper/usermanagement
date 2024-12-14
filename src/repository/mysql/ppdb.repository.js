@@ -41,7 +41,12 @@ async function insertPpdbSiswaSmkNu(nama_lengkap, tanggal_pendaftaran, nisn, asa
             return insertPpdb.get({ plain:true });
         } catch (error) {
             console.error('Error when insert data ppdb siswa baru ', error);
-        }
+           // Tangkap error spesifik duplicate entry
+            if (error.code === 'ER_DUP_ENTRY') {
+                throw new Error(`Duplicate Entry: ${error.sqlMessage}`);
+            }
+            throw error; // Lempar error lainnya
+            }
     }
 
 module.exports = {

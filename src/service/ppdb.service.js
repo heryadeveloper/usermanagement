@@ -17,7 +17,11 @@ async function insertPpdbSmknu(req){
         return insertDataPpdbSmknu;
     } catch (error) {
         console.error('Error in service insertPpdbSmknu : ', error);
-        throw error;
+        // Tangkap error spesifik duplicate entry
+        if (error.code === 'ER_DUP_ENTRY') {
+            throw new Error(`Duplicate Entry: ${error.sqlMessage}`);
+        }
+        throw error; // Lempar error lainnya
     }
 }
 

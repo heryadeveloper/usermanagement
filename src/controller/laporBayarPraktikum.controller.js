@@ -8,7 +8,7 @@ const getDataBayarPraktikum = catchAsync(async(req, res) => {
     if (getDataBayar) {
         res.send(responseInfo('Success Get Data Bayar Praktikum', getDataBayar));
     } else {
-        res.send(expectationFailed('Something Error in this action', null));
+        res.send(expectationFailed.expectationFailed('Something Error in this action', null));
     }
 })
 
@@ -17,7 +17,7 @@ const getHistoryPembayaranPraktikumByNisn = catchAsync(async(req, res) => {
     if (getHistoryPembayaranPraktikumByNisn) {
         res.send(responseInfo('Success get data history', getHistoryPembayaranPraktikumByNisn));
     }else {
-        res.send(expectationFailed('Something error', null));
+        res.send(expectationFailed.expectationFailed('Something error', null));
     }
 })
 
@@ -26,7 +26,7 @@ const addBayarPraktikum = catchAsync(async(req, res) => {
     if (inputBayarPraktikum) {
         res.send(responseInfo('Success Bayar Praktikum', inputBayarPraktikum));
     }else {
-        res.send(expectationFailed('Something error', null));
+        res.send(expectationFailed.expectationFailed('Something error', null));
     }
 })
 
@@ -35,7 +35,7 @@ const getDataHistoryPembayaranPraktikumNew = catchAsync(async(req, res) => {
     if (getHistory) {
         res.send(responseInfo('Success Get Data History', getHistory));
     } else {
-        res.send(expectationFailed('Something error', null));
+        res.send(expectationFailed.expectationFailed('Something error', null));
     }
 })
 
@@ -44,7 +44,7 @@ const addPaymentSiswa = catchAsync(async(req, res) => {
     if (addPaymentInstruction) {
         res.send(responseInfo('Success Bayar', addPaymentInstruction));
     } else {
-        res.send(expectationFailed('Something Error', null));
+        res.send(expectationFailed.expectationFailed('Something Error', null));
     }
 })
 
@@ -53,7 +53,7 @@ const getHistoryPaymentSiswa = catchAsync(async(req, res) => {
     if (getHistoryPaymentSiswaByNisn) {
         res.send(responseInfo('Success get data history', getHistoryPaymentSiswaByNisn));
     }else {
-        res.send(expectationFailed('Something error', null));
+        res.send(expectationFailed.expectationFailed('Something error', null));
     }
 })
 

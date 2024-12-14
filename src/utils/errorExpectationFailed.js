@@ -9,4 +9,16 @@ const expectationFailed = (message, data) => {
     };
 };
 
-module.exports = expectationFailed;
+const dataConflict = (message, data) => {
+    return {
+        status: 'Data Conflict',
+        code: httpStatus.CONFLICT,
+        message,
+        data,
+    };
+};
+
+module.exports = {
+    expectationFailed,
+    dataConflict
+};

@@ -303,6 +303,7 @@ async function getDataSiswaPPDB() {
     try {
         const query = `select 
             id,
+            tanggal_pendaftaran,
             nama_lengkap ,
             nisn,
             asal_sekolah ,

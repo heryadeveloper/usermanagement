@@ -10,7 +10,7 @@ const dataKenaikanKelas = catchAsync(async(req, res) => {
     if (updateKenaikanKelas.responseData != null) {
         res.send(responseInfo('SUccess Update Data Kenaikan', updateKenaikanKelas));
     } else {
-        res.send(expectationFailed('Something wrong when updating data', null));
+        res.send(expectationFailed.expectationFailed('Something wrong when updating data', null));
     }
 })
 
@@ -20,7 +20,7 @@ const dataGuru = catchAsync(async(req, res) => {
     if (dataGuruList.length > 0) {
         res.send(responseInfo('Success get data guru', dataGuruList));
     } else {
-        res.send(expectationFailed('Something when wrong', null));
+        res.send(expectationFailed.expectationFailed('Something when wrong', null));
     }
 })
 
