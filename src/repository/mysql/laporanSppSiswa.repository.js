@@ -389,6 +389,39 @@ async function jenisPembayaranPaymentUsingJenisTransaksi(tahun_ajaran, jenis_tra
     }
 }
 
+async function insertJenisPembayaran(kode_pembayaran, jenis_transaksi, kelas, nominal_bulan, nominal_total, tahun_ajaran) {
+    try {
+        const data = await db.jenis_pembayaran.create({
+            kode_pembayaran,
+            jenis_transaksi,
+            kelas,
+            nominal_bulan,
+            nominal_total,
+            created_at: new Date,
+            tahun_ajaran
+        });
+        return data.get({ plain:true });
+    } catch (error) {
+        console.error('Error when inserting data table laporan spp ', error);
+        throw error;
+    }
+}
+
+async function getJenisPembayaranAll() {
+    try {
+        const query = `select * from jenis_pembayaran jp`;
+                                
+        const responseData = await db.sequelize.query(query, {
+            type: db.Sequelize.QueryTypes.SELECT,
+        });
+
+        return responseData;
+    } catch (error) {
+        console.error('Error when get all jenis pembayaran', error);
+        throw error;
+    }
+}
+
 module.exports = {
     getDataSpp,
     getDataSppByNisn,
@@ -403,5 +436,7 @@ module.exports = {
     nilaiKekuranganPembayaran,
     getHistoryPembayaranSppNew,
     jenisPembayaran,
-    jenisPembayaranPaymentUsingJenisTransaksi
+    jenisPembayaranPaymentUsingJenisTransaksi,
+    insertJenisPembayaran,
+    getJenisPembayaranAll
 }

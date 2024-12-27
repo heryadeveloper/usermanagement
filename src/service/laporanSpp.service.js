@@ -113,11 +113,34 @@ async function getJenisPembayaran(req){
     }
 }
 
+async function insertJenisPembayaran(req) {
+    const {kode_pembayaran, jenis_transaksi, kelas, nominal_bulan, nominal_total, tahun_ajaran} = req.body;
+    try {
+        const data = await laporanSppMysqlRepository.insertJenisPembayaran(kode_pembayaran, jenis_transaksi, kelas, nominal_bulan, nominal_total, tahun_ajaran);
+        return data;
+    } catch (error) {
+        console.error('Error in service when inserting data ', error);
+        throw error;
+    }
+}
+
+async function getJenisPembayaranAll() {
+    try {
+        const data = await laporanSppMysqlRepository.getJenisPembayaranAll();
+        return data;
+    } catch (error) {
+        console.error('Error when get all jenis pembayaran ', error);
+        throw error;
+    }
+}
+
 module.exports = {
     getDataSpp,
     getDataSppByNisn,
     getBulanBelumBayar,
     inputPembayaran,
     getHistoryPembayaranSppNew,
-    getJenisPembayaran
+    getJenisPembayaran,
+    insertJenisPembayaran,
+    getJenisPembayaranAll
 }

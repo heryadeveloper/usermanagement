@@ -61,11 +61,39 @@ const getJenisPembayaran = catchAsync(async(req, res) => {
     }
 })
 
+const insertJenisPembayaran = catchAsync(async(req, res) => {
+    try {
+        const insertJenisPembayaran = await laporanSppService.insertJenisPembayaran(req);
+        if (insertJenisPembayaran) {
+            res.send(responseInfo('Success Insert Jenis Pembayaran', insertJenisPembayaran));
+        } else {
+            res.send(expectationFailed.expectationFailed('Something Error', null));
+        }
+    }catch (error){
+        res.send(errorExpectationFailed('Data Not Found', null));
+    }
+})
+
+const getJenisPembayaranAll = catchAsync(async(req, res) => {
+    try {
+        const dataJenisPembayaranAll = await laporanSppService.getJenisPembayaranAll();
+        if (dataJenisPembayaranAll) {
+            res.send(responseInfo('Success get jenis pembayaran', dataJenisPembayaranAll));
+        } else {
+            res.send(errorExpectationFailed('Data Not Found in table', null));
+        }
+    } catch (error) {
+        res.send(errorExpectationFailed('Data not found', null));
+    }
+})
+
 module.exports = {
     getDataSpp,
     getDataSppByNisn,
     getBulanBelumBayar,
     inputPembayaran,
     getDataHistoryPembayaranSpp,
-    getJenisPembayaran
+    getJenisPembayaran,
+    insertJenisPembayaran,
+    getJenisPembayaranAll
 }

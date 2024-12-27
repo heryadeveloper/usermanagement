@@ -120,12 +120,12 @@ async function insertPaymentSiswa(req) {
 async function historyPaymentSiswaByNisn(req){
     try {
         const {kelas, nisn, jenis_transaksi} = req.query;
-        const historyPembayaranPraktikumByNisn = await laporanPraktikumSiswaMysqlRepository.historyPaymentSiswaByNisn(kelas, nisn);
+        const historyPembayaranPraktikumByNisn = await laporanPraktikumSiswaMysqlRepository.historyPaymentSiswaByNisn(kelas, nisn, jenis_transaksi);
 
         // perhitungan kekurangan
         const jenispmebayaran = await laporanPraktikumSiswaMysqlRepository.dataJenisPembayaranPraktikumNew(kelas, jenis_transaksi);
 
-        const sumTotalHasPaid = await laporanPraktikumSiswaMysqlRepository.sumPaymentSiswa(nisn);
+        const sumTotalHasPaid = await laporanPraktikumSiswaMysqlRepository.sumPaymentSiswa(nisn, jenis_transaksi);
         console.log('sum total has paid: ', sumTotalHasPaid);
         const kekurangan = jenispmebayaran[0].nominal_total - sumTotalHasPaid[0].totalNominalBulan;
     

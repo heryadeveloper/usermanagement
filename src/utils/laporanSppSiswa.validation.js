@@ -20,6 +20,18 @@ const inputPembayaran = {
     }),
 };
 
+const inputJenisPembayaran = {
+    body: Joi.object().keys({
+        kode_pembayaran: Joi.string(),
+        jenis_transaksi: Joi.string(),
+        kelas: Joi.string(),
+        nominal_bulan: Joi.number(),
+        nominal_total: Joi.number(),
+        tahun_ajaran: Joi.string()
+    })
+}
+
 module.exports = {
     inputPembayaran,
+    inputJenisPembayaran
 }

@@ -184,12 +184,13 @@ async function insertPaymentSiswa(nama, kelas, nisn, bulan, tanggal_bayar, kode_
 
 }
 
-async function historyPaymentSiswaByNisn(kelas, nisn) {
+async function historyPaymentSiswaByNisn(kelas, nisn, jenis_transaksi) {
     try {
         const historyPembayaranPraktikumByNisn = await db.payment_siswa.findAll({
             where:{
                 kelas,
-                nisn
+                nisn,
+                jenis_transaksi
             },
             attributes: ['bulan_bayar', 'nominal_bayar', 'tanggal_bayar', 'inputter'],
             raw: true,
@@ -228,11 +229,11 @@ async function dataJenisPembayaranPraktikumNew(kelas, jenis_transaksi){
     }
 }
 
-async function sumPaymentSiswa(nisn){
+async function sumPaymentSiswa(nisn, jenis_transaksi){
     try {
-       const query = `select sum(nominal_bayar) totalNominalBulan from payment_siswa ps where ps.nisn = :nisn`;
+       const query = `select sum(nominal_bayar) totalNominalBulan from payment_siswa ps where ps.nisn = :nisn and ps.jenis_transaksi = :jenis_transaksi`;
        const responseData = await db.sequelize.query(query, {
-        replacements: {nisn},
+        replacements: {nisn, jenis_transaksi},
         type: db.Sequelize.QueryTypes.SELECT,
        });
 
