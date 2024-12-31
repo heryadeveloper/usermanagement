@@ -1,7 +1,7 @@
 const express = require('express');
 const validate = require('../middleware/validate');
-const { laporanSppController } = require('../controller');
-const { laporanSppSiswaValidation } = require('../utils');
+const { laporanSppController, laporanPraktikumController } = require('../controller');
+const { laporanSppSiswaValidation, laporanBayarPraktikumValidation } = require('../utils');
 
 const router = express.Router();
 
@@ -14,6 +14,7 @@ const routes = [
     { path: '/getJenisBayar', method: 'get', handler: laporanSppController.getJenisPembayaran},
     { path: '/addJenisPembayaran', method: 'post', validation: laporanSppSiswaValidation.inputJenisPembayaran, handler: laporanSppController.insertJenisPembayaran},
     { path: '/getAllJenisPembayaran', method: 'get', handler: laporanSppController.getJenisPembayaranAll},
+    { path: '/updateJenisPembayaran', method: 'put', validation: laporanSppSiswaValidation.inputJenisPembayaran, handler: laporanPraktikumController.updateJenisPayment}
 ];
 
 routes.forEach(route => {

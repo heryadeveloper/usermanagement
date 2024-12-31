@@ -210,18 +210,19 @@ async function historyPaymentSiswaByNisn(kelas, nisn, jenis_transaksi) {
     }
 }
 
-async function dataJenisPembayaranPraktikumNew(kelas, jenis_transaksi){
+async function dataJenisPembayaranPraktikumNew(kelas, jenis_transaksi, tahun_ajaran){
     try {
         const kelas_split = kelas.split(' ')[0];
         const jenisPembayaran = await db.jenis_pembayaran.findAll({
             where: {
                 jenis_transaksi,
                 kelas: kelas_split,
+                tahun_ajaran
             },
             attributes:['kode_pembayaran', 'nominal_bulan', 'nominal_total'],
             raw: true
         })
-
+        console.log('jenisPembayaran : ', jenisPembayaran);
         return jenisPembayaran;
     } catch (error) {
         console.error('Error get data', error);
@@ -231,15 +232,43 @@ async function dataJenisPembayaranPraktikumNew(kelas, jenis_transaksi){
 
 async function sumPaymentSiswa(nisn, jenis_transaksi){
     try {
-       const query = `select sum(nominal_bayar) totalNominalBulan from payment_siswa ps where ps.nisn = :nisn and ps.jenis_transaksi = :jenis_transaksi`;
-       const responseData = await db.sequelize.query(query, {
+        const query = `select sum(nominal_bayar) totalNominalBulan from payment_siswa ps where ps.nisn = :nisn and ps.jenis_transaksi = :jenis_transaksi`;
+        const responseData = await db.sequelize.query(query, {
         replacements: {nisn, jenis_transaksi},
         type: db.Sequelize.QueryTypes.SELECT,
-       });
+        });
 
-       return responseData;
+        return responseData;
     } catch (error) {
         console.error('Error get data', error);
+        throw error;
+    }
+}
+
+async function updateJenisPayment (kode_pembayaran, jenis_transaksi, kelas, nominal_bulan, nominal_total, tahun_ajaran){
+    try {
+        const query = `update jenis_pembayaran a set a.jenis_transaksi = :jenis_transaksi, a.kelas = :kelas, a.nominal_bulan = :nominal_bulan, a.nominal_total = :nominal_total , a.tahun_ajaran = :tahun_ajaran
+            where a.kode_pembayaran = :kode_pembayaran`;
+        
+        // eksekusi query update
+            await db.sequelize.query(query, {
+            replacements: {kode_pembayaran, jenis_transaksi, kelas, nominal_bulan, nominal_total, tahun_ajaran},
+            type: db.Sequelize.QueryTypes.UPDATE,
+        });
+
+        // Query untuk mendapatkan data yang diperbarui
+        const selectQuery = `
+        SELECT *
+        FROM jenis_pembayaran
+        WHERE kode_pembayaran = :kode_pembayaran`;
+        const updatedData = await db.sequelize.query(selectQuery, {
+            replacements: { kode_pembayaran },
+            type: db.Sequelize.QueryTypes.SELECT,
+        });
+
+        return updatedData;
+    } catch (error) {
+        console.error('Error update data', error);
         throw error;
     }
 }
@@ -254,5 +283,5 @@ module.exports = {
     getHistoryPembayaranNew,
     insertPaymentSiswa,
     historyPaymentSiswaByNisn, dataJenisPembayaranPraktikumNew,
-    sumPaymentSiswa
+    sumPaymentSiswa, updateJenisPayment
 }

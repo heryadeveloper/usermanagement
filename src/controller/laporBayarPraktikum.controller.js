@@ -50,9 +50,22 @@ const addPaymentSiswa = catchAsync(async(req, res) => {
 
 const getHistoryPaymentSiswa = catchAsync(async(req, res) => {
     const getHistoryPaymentSiswaByNisn = await laporanPraktikumService.historyPaymentSiswaByNisn(req);
-    if (getHistoryPaymentSiswaByNisn) {
+    console.log('controller : ', getHistoryPaymentSiswaByNisn.kekurangan);
+    if (getHistoryPaymentSiswaByNisn.kekurangan !== 0) {
         res.send(responseInfo('Success get data history', getHistoryPaymentSiswaByNisn));
-    }else {
+    }else if (getHistoryPaymentSiswaByNisn.kekurangan === 0) {
+        res.send(expectationFailed.dataNotFound('Data Not Found in Table', null));
+    }else{
+        res.send(expectationFailed.expectationFailed('Something error', null));
+    }
+})
+
+const updateJenisPayment = catchAsync(async(req, res) => {
+    const updateJenisPaymentss = await laporanPraktikumService.updateJenisPayment(req);
+    if (updateJenisPaymentss) {
+        console.log('update: ', updateJenisPaymentss);
+        res.send(responseInfo('Success Update Data', updateJenisPaymentss));
+    } else {
         res.send(expectationFailed.expectationFailed('Something error', null));
     }
 })
@@ -63,5 +76,6 @@ module.exports = {
     addBayarPraktikum,
     getDataHistoryPembayaranPraktikumNew,
     addPaymentSiswa,
-    getHistoryPaymentSiswa
+    getHistoryPaymentSiswa,
+    updateJenisPayment
 }

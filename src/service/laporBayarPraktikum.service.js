@@ -119,23 +119,41 @@ async function insertPaymentSiswa(req) {
 
 async function historyPaymentSiswaByNisn(req){
     try {
-        const {kelas, nisn, jenis_transaksi} = req.query;
+        const {kelas, nisn, jenis_transaksi, tahun_ajaran} = req.query;
         const historyPembayaranPraktikumByNisn = await laporanPraktikumSiswaMysqlRepository.historyPaymentSiswaByNisn(kelas, nisn, jenis_transaksi);
 
         // perhitungan kekurangan
-        const jenispmebayaran = await laporanPraktikumSiswaMysqlRepository.dataJenisPembayaranPraktikumNew(kelas, jenis_transaksi);
-
-        const sumTotalHasPaid = await laporanPraktikumSiswaMysqlRepository.sumPaymentSiswa(nisn, jenis_transaksi);
-        console.log('sum total has paid: ', sumTotalHasPaid);
-        const kekurangan = jenispmebayaran[0].nominal_total - sumTotalHasPaid[0].totalNominalBulan;
-    
-        const data = kekurangan;
-        return {
-            result: historyPembayaranPraktikumByNisn,
-            kekurangan: data
-        };
+        const jenispmebayaran = await laporanPraktikumSiswaMysqlRepository.dataJenisPembayaranPraktikumNew(kelas, jenis_transaksi, tahun_ajaran);
+        console.log('jenis pembayaran: ', jenispmebayaran);
+        if (jenispmebayaran.length > 0) {
+            const sumTotalHasPaid = await laporanPraktikumSiswaMysqlRepository.sumPaymentSiswa(nisn, jenis_transaksi);
+            console.log('sum total has paid: ', sumTotalHasPaid);
+            const kekurangan = jenispmebayaran[0].nominal_total - sumTotalHasPaid[0].totalNominalBulan;
+        
+            const data = kekurangan;
+            return {
+                result: historyPembayaranPraktikumByNisn,
+                kekurangan: data
+            };
+        }else{
+            return {
+                result: historyPembayaranPraktikumByNisn,
+                kekurangan: 0
+            }
+        }
     } catch (error) {
         console.error('error service get data pemasukan praktikum', error);
+        throw error;
+    }
+}
+
+async function updateJenisPayment(req) {
+    try {
+        const {kode_pembayaran, jenis_transaksi, kelas,nominal_bulan, nominal_total, tahun_ajaran} = req.body;
+        const updateJenisPayments = await laporanPraktikumSiswaMysqlRepository.updateJenisPayment(kode_pembayaran, jenis_transaksi, kelas, nominal_bulan, nominal_total, tahun_ajaran);
+        return updateJenisPayments;
+    } catch (error) {
+        console.error('Error update jenis payment', error);
         throw error;
     }
 }
@@ -147,5 +165,6 @@ module.exports = {
     insertPembayaranPraktikum,
     getHistoryPembayaranNew,
     insertPaymentSiswa,
-    historyPaymentSiswaByNisn
+    historyPaymentSiswaByNisn,
+    updateJenisPayment
 }

@@ -18,7 +18,17 @@ const dataConflict = (message, data) => {
     };
 };
 
+const dataNotFound = (message, data) => {
+    return {
+        status: 'Data Not Found',
+        code: httpStatus.NOT_FOUND,
+        message,
+        data,
+    };
+};
+
 module.exports = {
     expectationFailed,
-    dataConflict
+    dataConflict,
+    dataNotFound
 };
