@@ -326,23 +326,35 @@ async function nilaiKekuranganPembayaran(nisn, kelas, tahun_ajaran, jenis_transa
 
 async function getHistoryPembayaranSppNew(page, pageSize){
     try {
+        // Validasi parameter
+        if (isNaN(page) || page < 1) {
+            throw new Error("Parameter 'page' harus berupa angka positif.");
+        }
+        const pageSizeNumeric = Number(pageSize);
+        if (isNaN(pageSizeNumeric) || pageSizeNumeric < 1) {
+            throw new Error("Parameter 'pageSize' harus berupa angka positif.");
+        }
+
         const totalCount = await db.laporan_spp_siswa.count({
             raw:true,
         });
 
-        const offset = (page - 1) * pageSize;
+        const offset = (page - 1) * pageSizeNumeric;
+
         const responseData = await db.laporan_spp_siswa.findAll({
             order:[['id','DESC']],
             offset: offset,
-            limit: pageSize,
+            limit: pageSizeNumeric,
             raw: true,
         });
 
-        // format tanggal bayar
-        const formattedData = responseData.map(record => {
-            const formattedData = moment(record.tanggal_bayar).format('DD-MM-YYYY');
-            return { ...record, tanggal_bayar: formattedData};
-        })
+        const formattedData = responseData.map((record) => ({
+            ...record,
+            tanggal_bayar: record.tanggal_bayar 
+                ? moment(record.tanggal_bayar).format('DD-MM-YYYY') 
+                : null, // Handle null or undefined values
+        }));
+
         return{
             totalCount: totalCount,
             responseData: formattedData,
