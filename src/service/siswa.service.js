@@ -55,6 +55,7 @@ async function getListKelasDet(req){
 async function getListNamaSiswa(req){
     const {tahun_masuk, kelas} = req.query;
     try {
+        console.log(tahun_masuk, kelas);
         const data = await dataIndukMysqlRepository.getNamaSiswa(tahun_masuk, kelas);
         return data;
     } catch (error) {

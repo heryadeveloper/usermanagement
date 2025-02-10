@@ -73,11 +73,11 @@ async function getListKelasDet(tahun_ajaran){
     }
 }
 
-async function getNamaSiswa(tahun_masuk, kelas){
+async function getNamaSiswa(tahun_ajaran, kelas){
     try {
         const listNamaSiswa = await db.data_induk.findAll({
             where: {
-                tahun_masuk, rombel_saat_ini : kelas
+                tahun_ajaran, rombel_saat_ini : kelas
             },
             attributes: [
                 'nama', 
@@ -224,7 +224,8 @@ async function getDataGuru(){
             a.role_name ,
             b.alamat ,
             b.tahun_masuk, 
-            b.sex jenis_kelamin 
+            b.sex jenis_kelamin,
+            b.kode_guru
             FROM account_guru_karyawan a
             join data_guru_karyawan b on 
             a.id_role = b.id_role
