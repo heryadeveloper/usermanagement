@@ -397,30 +397,6 @@ async function getDataSiswaPPDB() {
 }
 
 async function generateExcel(res) {
-    const datas = [
-        {
-            namaAyah: "Sugianto",
-            pekerjaanAyah: "Guru",
-            namaIbu: "Sumilah",
-            pekerjaanIbu: "Guru",
-            namaWali: "Sugianto",
-            pekerjaanWali: "Guru",
-            noHP: "08976526251",
-            jurusan: "PENGEMBANGAN PERANGKAT LUNAK",
-            highlight: "yellow", // warna baris
-            },
-            {
-            namaAyah: "Sunardi",
-            pekerjaanAyah: "-",
-            namaIbu: "Siti Rofikoh",
-            pekerjaanIbu: "Pedagang",
-            namaWali: "Siti Rofikoh",
-            pekerjaanWali: "Pedagang",
-            noHP: "085669603673",
-            jurusan: "TEKNIK KETENAGALISTRIKAN",
-            highlight: "red", // warna baris
-            },
-        ];
     const dataSiswaPPDB = await dataIndukMysqlRepository.getDataSiswaPPDBForGenerateExcel();
     try {
         // Buat UUID unik
@@ -430,95 +406,6 @@ async function generateExcel(res) {
         const filename = `Generate_ppdb_${uniqueId}.xlsx`;
         const workbook = new ExcelJs.Workbook();
         const worksheet = workbook.addWorksheet('Data PPDB');
-    
-        // Set kolom width untuk tampilan rapi
-        // worksheet.columns = [
-        //     { width: 5 }, // Kolom kosong untuk padding
-        //     { width: 30 },
-        //     { width: 50 },
-        //     { width: 5 }, // Kolom kosong untuk padding
-        // ];
-        
-         // Membuat header
-        // const logoPath = path.join(__dirname, '../assets/logosmk.png');
-        // const logoImage = workbook.addImage({
-        //     filename: logoPath,
-        //     extension: 'png',
-        // });
-
-        // worksheet.addImage(logoImage, {
-        //     tl: { col: 1, row: 1 }, // Top-left posisi (kolom 1, baris 1)
-        //     ext: { width: 80, height: 80 }, // Ukuran gambar
-        // });
-
-        // worksheet.mergeCells('B2:D2');
-        // worksheet.getCell('B2').value = 'PANITIA PENERIMAAN PESERTA DIDIK BARU (PPDB)';
-        // worksheet.getCell('B2').font = { bold: true, size: 14 };
-        // worksheet.getCell('B2').alignment = { vertical: 'middle', horizontal: 'center' };
-
-        // worksheet.mergeCells('B3:D3');
-        // worksheet.getCell('B3').value = 'TAHUN PELAJARAN 2025/2026';
-        // worksheet.getCell('B3').font = { bold: true, size: 14 };
-        // worksheet.getCell('B3').alignment = { vertical: 'middle', horizontal: 'center' };
-
-        // worksheet.mergeCells('B4:D4');
-        // worksheet.getCell('B4').value = 'SMK NU TULIS';
-        // worksheet.getCell('B4').font = { bold: true, size: 14 };
-        // worksheet.getCell('B4').alignment = { vertical: 'middle', horizontal: 'center' };
-
-        // worksheet.mergeCells('B5:D5');
-        // worksheet.getCell('B5').value = 'KABUPATEN BATANG';
-        // worksheet.getCell('B5').font = { bold: true, size: 14 };
-        // worksheet.getCell('B5').alignment = { vertical: 'middle', horizontal: 'center' };
-
-        // worksheet.mergeCells('B6:D6');
-        // worksheet.getCell('B6').value =
-        //     'Jl. Raya Tulis-Batang Gg. Melati No.02 Gondangan Tulis Batang 51261';
-        // worksheet.getCell('B6').font = { size: 10 };
-        // worksheet.getCell('B6').alignment = { vertical: 'middle', horizontal: 'center' };
-
-        // worksheet.mergeCells('B7:D7');
-        // worksheet.getCell('B7').value = 'Telp.(0285)3972786 email : smknu-tulis@smknu-tulis.sch.id';
-        // worksheet.getCell('B7').font = { size: 10 };
-        // worksheet.getCell('B7').alignment = { vertical: 'middle', horizontal: 'center' };
-
-        // // Membuat Border Bingkai
-        // worksheet.getCell('B9').value = 'DATA IDENTITAS PESERTA DIDIK';
-        // worksheet.getCell('B9').font = { bold: true, size: 12 };
-        // worksheet.getCell('B9').fill = {
-        //     type: 'pattern',
-        //     pattern: 'solid',
-        //     fgColor: { argb: 'FFD9EAD3' }, // Warna hijau muda
-        // };
-        // worksheet.getCell('B9').alignment = { vertical: 'middle', horizontal: 'center' };
-
-        // worksheet.mergeCells('B9:D9');
-        // worksheet.getRow(9).border = {
-        //     top: { style: 'thin' },
-        //     left: { style: 'thin' },
-        //     bottom: { style: 'thin' },
-        //     right: { style: 'thin' },
-        // };
-
-        // // Menambahkan Data Peserta
-        // worksheet.getCell('B11').value = 'Prodi Yang Diminati';
-        // worksheet.getCell('C11').value = ': TEKNIK KETENAGALISTRIKAN (TK)';
-        // worksheet.getCell('B12').value = 'No. Pendaftaran';
-        // worksheet.getCell('C12').value = ': ppdb.2024-2025-015';
-
-        // // Membuat border di sekitar seluruh halaman
-        // worksheet.eachRow({ includeEmpty: true }, (row, rowIndex) => {
-        //     row.eachCell({ includeEmpty: true }, (cell, colIndex) => {
-        //         if (rowIndex >= 1 && rowIndex <= 15 && colIndex >= 2 && colIndex <= 4) {
-        //             cell.border = {
-        //                 top: { style: 'thin' },
-        //                 left: { style: 'thin' },
-        //                 bottom: { style: 'thin' },
-        //                 right: { style: 'thin' },
-        //             };
-        //         }
-        //     });
-        // });
 
          // Tambahkan header
         worksheet.columns = [
