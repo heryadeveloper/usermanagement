@@ -90,8 +90,8 @@ async function downloadPdf(req, res){
     const {nisn} = req.query;
 
     const data = {  
-        ketua: 'Yuli Sumantri, S.Kom',
-        nip: '85.201409.010',
+        ketua: 'Luki Widyastuti, S.Pd., Gr.',
+        nip: '92.201701.029',
     };
 
     const dataPpdb = await dataIndukMysqlRepository.getDataPpdb(nisn);
@@ -114,7 +114,7 @@ async function downloadPdf(req, res){
     doc
         .fontSize(12)
         .font('Helvetica-Bold')
-        .text('PANITIA PENERIMAAN PESERTA DIDIK BARU (PPDB)', { align: 'center' })
+        .text('SISTEM PENERIMAAN SISWA BARU (SPMB)', { align: 'center' })
         .text('TAHUN PELAJARAN 2025/2026', { align: 'center' })
         .text('SMK NU TULIS', { align: 'center' })
         .text('KABUPATEN BATANG', { align: 'center' })
@@ -143,7 +143,7 @@ async function downloadPdf(req, res){
         .fontSize(12)
         .font('Helvetica-Bold')
         .text('SURAT BUKTI PENDAFTARAN', { align: 'center' })
-        .text('PENERIMAAN PESERTA DIDIK BARU (PPDB)', { align: 'center' })
+        .text('SISTEM PENERIMAAN SISWA BARU (SPMB)', { align: 'center' })
         .text('TAHUN PELAJARAN 2025/2026', { align: 'center' })
         .text('SMK NU TULIS', { align: 'center' })
         .moveDown(1);
@@ -176,7 +176,7 @@ async function downloadPdf(req, res){
         .fontSize(10)
         .font('Helvetica')
         .text(`Tulis, ${formattedDate}`, { align: 'right' })
-        .text('Ketua Panitia PPDB,', { align: 'right' })
+        .text('Ketua Panitia SPMB,', { align: 'right' })
         .moveDown(5)
         .text(data.ketua, { align: 'right' })
         .text(`NIPY. ${data.nip}`, { align: 'right' });
@@ -268,7 +268,7 @@ async function downloadFormPpdb(req, res) {
     doc
         .fontSize(13)
         .font('Helvetica-Bold')
-        .text('PANITIA PENERIMAAN PESERTA DIDIK BARU (PPDB)', { align: 'center'})
+        .text('SISTEM PENERIMAAN SISWA BARU (SPMB)', { align: 'center'})
         .text('TAHUN PELAJARAN 2025/2026', { align: 'center' })
         .text('SMK NU TULIS', { align: 'center' })
         .text('KABUPATEN BATANG', { align: 'center' });
