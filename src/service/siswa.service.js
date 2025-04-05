@@ -94,6 +94,8 @@ async function downloadPdf(req, res){
         nip: '92.201701.029',
     };
 
+    let y = 480;
+
     const dataPpdb = await dataIndukMysqlRepository.getDataPpdb(nisn);
     const databaru = dataPpdb?? {};
     const formattedDate = moment(databaru.tanggal_pendaftaran).format('DD-MM-YYYY');
@@ -169,22 +171,27 @@ async function downloadPdf(req, res){
         { align: 'left', width: 500 } // Atur lebar teks
     )
 
-
+    const xText = 50;
+    const yText = y + 25;
     // Tanggal dan Ketua
     doc
         .moveDown(3)
         .fontSize(10)
         .font('Helvetica')
-        .text(`Tulis, ${formattedDate}`, { align: 'right' })
-        .text('Ketua Panitia SPMB,', { align: 'right' })
-        .moveDown(5)
-        .text(data.ketua, { align: 'right' })
-        .text(`NIPY. ${data.nip}`, { align: 'right' });
+        // .text(`Tulis, ${formattedDate}`, { align: 'right' })
+        .text(`Tulis, ${formattedDate}`, xText + 350, yText)
+        // .text('Ketua Panitia SPMB,', { align: 'right' })
+        .text('Ketua Panitia SPMB', xText + 350, yText + 10)
+        .moveDown(3)
+        // .text(data.ketua, { align: 'right' })
+        .text(data.ketua, xText + 350, yText + 140)
+        // .text(`NIPY. ${data.nip}`, { align: 'right' });
+        .text(`NIPY. ${data.nip}`, xText + 350, yText +  150)
 
     // Tambahkan Stempel
     doc
-        .moveDown(2)
-        .image(path.join(__dirname, '../assets/stempel.png'), 400, doc.y - 100, { width: 120 });
+        .moveDown(3)
+        .image(path.join(__dirname, '../assets/ttd_panitia_SPMB.png'), 400, doc.y - 170 , { width: 120 });
 
     // Catatan
     doc
@@ -376,7 +383,7 @@ async function downloadFormPpdb(req, res) {
         .fontSize(10)
         .font('Helvetica')
         .text('Tulis ' +formattedDate, xText + 350, yText)
-        .text('Calon Peserta Didik', xText + 350, yText + 20)
+        .text('Calon Siswa', xText + 350, yText + 20)
         .text(databaru[0].nama_lengkap, xText + 350, yText + 120, {underline: true});
 
     doc.end();
