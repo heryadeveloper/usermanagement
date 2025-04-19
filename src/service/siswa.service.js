@@ -5,6 +5,7 @@ const moment = require('moment');
 const ExcelJs = require('exceljs');
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
+// const { width } = require("pdfkit/js/page");
 
 async function listSiswa(req){
     const {rombel_saat_ini} = req.query;
@@ -191,7 +192,10 @@ async function downloadPdf(req, res){
     // Tambahkan Stempel
     doc
         .moveDown(3)
-        .image(path.join(__dirname, '../assets/ttd_panitia_SPMB.png'), 400, doc.y - 170 , { width: 120 });
+        .image(path.join(__dirname, '../assets/stempel1.png'), 400, doc.y - 170 , { width: 120});
+
+    doc
+        .image(path.join(__dirname, '../assets/ttd_panitia_SPMB.png'), 420, doc.y - 170 , { width: 120, opacity: 0.4 } );
 
     // Catatan
     doc
