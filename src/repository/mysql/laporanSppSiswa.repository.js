@@ -444,8 +444,8 @@ async function getRekapPembayaranSpp(kelas){
                             lss.nominal_bulan,
                             lss.bulan_bayar ,
                             jp.nominal_total
-                            from smknutulis.laporan_spp_siswa lss 
-                            join smknutulis.jenis_pembayaran jp 
+                            from laporan_spp_siswa lss 
+                            join jenis_pembayaran jp 
                                 on lss.kode_bayar = jp.kode_pembayaran
                         where lss.kelas =:kelas
                         order by lss.nama_siswa asc`;
@@ -514,8 +514,8 @@ async function getRekapPembayaranPraktik(kelas){
                             lss.nominal_bulan,
                             lss.bulan_bayar ,
                             jp.nominal_total
-                            from smknutulis.laporan_praktikum_siswa lss
-                            join smknutulis.jenis_pembayaran jp
+                            from laporan_praktikum_siswa lss
+                            join jenis_pembayaran jp
                                 on lss.kode_bayar = jp.kode_pembayaran
                         where lss.kelas =:kelas
                         order by lss.nama_siswa asc`;
@@ -601,7 +601,7 @@ async function getJeninsPembayaranForNominal(kelas, tahun_ajaran){
     try {
         const query = ` select
                             jp.jenis_transaksi 
-                            from smknutulis.jenis_pembayaran jp 
+                            from jenis_pembayaran jp 
                             where jp.kelas =:kelas
                             and jp.tahun_ajaran =:tahun_ajaran`;
         const result = await db.sequelize.query(query, {
