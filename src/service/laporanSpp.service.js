@@ -18,7 +18,7 @@ async function getDataSpp(req){
 async function getDataSppByNisn(req){
     try {
         const { nisn, kelas, tahun_ajaran, jenis_transaksi } = req.query;
-        const getDataSppByNisns = await laporanSppMysqlRepository.getDataSppByNisn(nisn);
+        const getDataSppByNisns = await laporanSppMysqlRepository.getDataSppByNisn(nisn, kelas);
         const nilaiKekuranganSiswa = await laporanSppMysqlRepository.nilaiKekuranganPembayaran(nisn, kelas, tahun_ajaran, jenis_transaksi);
         return {
             dataSpp: getDataSppByNisns,
@@ -134,6 +134,34 @@ async function getJenisPembayaranAll() {
     }
 }
 
+async function getRekapPembayaranSpp(req){
+    const {kelas, jenisPembayaran} = req.query;
+    try {
+        let data = null;
+        if(jenisPembayaran === 'SPP'){
+            data = await laporanSppMysqlRepository.getRekapPembayaranSpp(kelas);
+        }else{
+            data = await laporanSppMysqlRepository.getRekapPembayaranPraktik(kelas);
+        }
+        return data;
+    } catch (error) {
+        console.error('error when get data rekap: ', error);
+        throw error;
+    }
+}
+
+async function getJeninsPembayaranForNominal(req) {
+    const {kelas, tahun_ajaran} = req.query;
+    try {
+        data = await laporanSppMysqlRepository.getJeninsPembayaranForNominal(kelas, tahun_ajaran);
+        return data;
+    } catch (error) {
+        console.error('error when get jenis pembayaran: ', error);
+        throw error;
+    }
+    
+}
+
 module.exports = {
     getDataSpp,
     getDataSppByNisn,
@@ -142,5 +170,7 @@ module.exports = {
     getHistoryPembayaranSppNew,
     getJenisPembayaran,
     insertJenisPembayaran,
-    getJenisPembayaranAll
+    getJenisPembayaranAll,
+    getRekapPembayaranSpp,
+    getJeninsPembayaranForNominal
 }

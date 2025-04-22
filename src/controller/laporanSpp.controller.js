@@ -87,6 +87,32 @@ const getJenisPembayaranAll = catchAsync(async(req, res) => {
     }
 })
 
+const getRekapPembayaranSpp = catchAsync(async(req, res) => {
+    try {
+        const rekapPembayaranSpp = await laporanSppService.getRekapPembayaranSpp(req);
+        if (rekapPembayaranSpp) {
+            res.send(responseInfo('Success Get Data Rekap', rekapPembayaranSpp));
+        } else {
+            res.send(expectationFailed.expectationFailed('Something Error', null));
+        }
+    } catch (error) {
+        res.send(errorExpectationFailed('Data Not Found', null));
+    }
+});
+
+const getJeninsPembayaranForNominal = catchAsync(async(req, res) => {
+    try {
+        const dataJenisPembayaran = await laporanSppService.getJeninsPembayaranForNominal(req);
+        if (dataJenisPembayaran) {
+            res.send(responseInfo('Success Get Jenis Pembayaran', dataJenisPembayaran));
+        } else {
+            res.send(expectationFailed('Data Not Found', null));
+        }
+    } catch (error) {
+        res.send(errorExpectationFailed('Internal Service Error', null));
+    }
+})
+
 module.exports = {
     getDataSpp,
     getDataSppByNisn,
@@ -95,5 +121,7 @@ module.exports = {
     getDataHistoryPembayaranSpp,
     getJenisPembayaran,
     insertJenisPembayaran,
-    getJenisPembayaranAll
+    getJenisPembayaranAll,
+    getRekapPembayaranSpp,
+    getJeninsPembayaranForNominal
 }

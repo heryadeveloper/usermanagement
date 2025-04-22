@@ -334,6 +334,9 @@ async function getHistoryPembayaranSppNew(page, pageSize){
         throw error;
     }
 }
+
+
+
 module.exports = {
     getDataSpp,
     getDataSppByNisn,

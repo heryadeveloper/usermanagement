@@ -14,7 +14,9 @@ const routes = [
     { path: '/getJenisBayar', method: 'get', handler: laporanSppController.getJenisPembayaran},
     { path: '/addJenisPembayaran', method: 'post', validation: laporanSppSiswaValidation.inputJenisPembayaran, handler: laporanSppController.insertJenisPembayaran},
     { path: '/getAllJenisPembayaran', method: 'get', handler: laporanSppController.getJenisPembayaranAll},
-    { path: '/updateJenisPembayaran', method: 'put', validation: laporanSppSiswaValidation.inputJenisPembayaran, handler: laporanPraktikumController.updateJenisPayment}
+    { path: '/updateJenisPembayaran', method: 'put', validation: laporanSppSiswaValidation.inputJenisPembayaran, handler: laporanPraktikumController.updateJenisPayment},
+    { path: '/rekapdataspp', method: 'get', handler: laporanSppController.getRekapPembayaranSpp},
+    { path: '/getJenisPembayaran', method: 'get', handler: laporanSppController.getJeninsPembayaranForNominal}
 ];
 
 routes.forEach(route => {

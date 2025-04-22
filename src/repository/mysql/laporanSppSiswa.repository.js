@@ -42,7 +42,7 @@ async function getDataSpp(bulan_bayar, tahun_bayar, kelas, page, pageSize){
     }
 }
 
-async function getDataSppByNisn(nisn) {
+async function getDataSppByNisn(nisn, kelas) {
     try {
         const subqueryAllMonths = `
             SELECT 'Januari' AS bulan, 1 as urutan_bulan UNION
@@ -76,6 +76,8 @@ async function getDataSppByNisn(nisn) {
                     petugas_input
                 FROM laporan_spp_siswa
                 WHERE nisn = :nisn
+                and tahun_bayar not in ('N')
+                and kelas = :kelas
             ) AS paid_months
             ON all_months.bulan = paid_months.bulan_bayar
             WHERE COALESCE(paid_months.nominal_bulan, 0) != 0
@@ -83,7 +85,7 @@ async function getDataSppByNisn(nisn) {
         `;
 
         const responseData = await db.sequelize.query(query, {
-            replacements: { nisn },
+            replacements: { nisn, kelas },
             type: QueryTypes.SELECT,
         });
         console.log('response dari query: ', responseData);
@@ -434,6 +436,186 @@ async function getJenisPembayaranAll() {
     }
 }
 
+async function getRekapPembayaranSpp(kelas){
+    try {
+        const query = `  select
+                            lss.nama_siswa,
+                            lss.kelas,
+                            lss.nominal_bulan,
+                            lss.bulan_bayar ,
+                            jp.nominal_total
+                            from smknutulis.laporan_spp_siswa lss 
+                            join smknutulis.jenis_pembayaran jp 
+                                on lss.kode_bayar = jp.kode_pembayaran
+                        where lss.kelas =:kelas
+                        order by lss.nama_siswa asc`;
+        const result = await db.sequelize.query(query, {
+            replacements: {kelas},
+            type: db.Sequelize.QueryTypes.SELECT,
+        });
+
+        // Kelompokkan data per siswa
+        const siswaMap = new Map();
+        
+        result.forEach(item => {
+            if (!siswaMap.has(item.nama_siswa)) {
+                siswaMap.set(item.nama_siswa, {
+                    nama: item.nama_siswa,
+                    kelas: item.kelas,
+                    pembayaran: {
+                        JULI: 0,
+                        AGUST: 0,
+                        SEPT: 0,
+                        OKTO: 0,
+                        NOPE: 0,
+                        DESE: 0,
+                        JANU: 0,
+                        FEBRU: 0,
+                        MAR: 0,
+                        APRIL: 0,
+                        MEI: 0,
+                        JUNI: 0
+                    },
+                    sasaran: item.nominal_total,
+                    capaian: 0,
+                    kekurangan: 0,
+                    rowColor: 'red'
+                });
+            }
+            
+            const siswaData = siswaMap.get(item.nama_siswa);
+            const bulanKey = getBulanKey(item.bulan_bayar);
+            
+            if (bulanKey) {
+                siswaData.pembayaran[bulanKey] = item.nominal_bulan;
+                siswaData.capaian += item.nominal_bulan;
+            }
+        });
+
+        // Hitung kekurangan dan tentukan warna untuk setiap siswa
+        const formattedData = Array.from(siswaMap.values()).map(siswa => {
+            siswa.kekurangan = siswa.sasaran - siswa.capaian;
+            siswa.rowColor = siswa.capaian >= siswa.kekurangan ? 'green' : 'red';
+            return siswa;
+        });
+        return formattedData;
+
+    } catch (error) {
+        console.error('Error: ', error);
+        throw error;
+    }
+}
+
+async function getRekapPembayaranPraktik(kelas){
+    try {
+        const query = `select
+                            lss.nama_siswa,
+                            lss.kelas,
+                            lss.nominal_bulan,
+                            lss.bulan_bayar ,
+                            jp.nominal_total
+                            from smknutulis.laporan_praktikum_siswa lss
+                            join smknutulis.jenis_pembayaran jp
+                                on lss.kode_bayar = jp.kode_pembayaran
+                        where lss.kelas =:kelas
+                        order by lss.nama_siswa asc`;
+        const result = await db.sequelize.query(query, {
+            replacements: {kelas},
+            type: db.Sequelize.QueryTypes.SELECT,
+        });
+
+        // Kelompokkan data per siswa
+        const siswaMap = new Map();
+        
+        result.forEach(item => {
+            if (!siswaMap.has(item.nama_siswa)) {
+                siswaMap.set(item.nama_siswa, {
+                    nama: item.nama_siswa,
+                    kelas: item.kelas,
+                    pembayaran: {
+                        JULI: 0,
+                        AGUST: 0,
+                        SEPT: 0,
+                        OKTO: 0,
+                        NOPE: 0,
+                        DESE: 0,
+                        JANU: 0,
+                        FEBRU: 0,
+                        MAR: 0,
+                        APRIL: 0,
+                        MEI: 0,
+                        JUNI: 0
+                    },
+                    sasaran: item.nominal_total,
+                    capaian: 0,
+                    kekurangan: 0,
+                    rowColor: 'red'
+                });
+            }
+            
+            const siswaData = siswaMap.get(item.nama_siswa);
+            const bulanKey = getBulanKey(item.bulan_bayar);
+            
+            if (bulanKey) {
+                siswaData.pembayaran[bulanKey] = item.nominal_bulan;
+                siswaData.capaian += item.nominal_bulan;
+            }
+        });
+
+        // Hitung kekurangan dan tentukan warna untuk setiap siswa
+        const formattedData = Array.from(siswaMap.values()).map(siswa => {
+            siswa.kekurangan = siswa.sasaran - siswa.capaian;
+            siswa.rowColor = siswa.capaian >= siswa.kekurangan ? 'green' : 'red';
+            return siswa;
+        });
+        return formattedData;
+
+
+    } catch (error) {
+        console.error('Error: ', error);
+        throw error;
+    }
+}
+
+
+// Helper function untuk mengkonversi nama bulan ke key yang diinginkan
+function getBulanKey(bulan) {
+    const bulanMap = {
+        'Juli': 'JULI',
+        'Agustus': 'AGUST',
+        'September': 'SEPT',
+        'Oktober': 'OKTO',
+        'November': 'NOPE',
+        'Desember': 'DESE',
+        'Januari': 'JANU',
+        'Februari': 'FEBRU',
+        'Maret': 'MAR',
+        'April': 'APRIL',
+        'Mei': 'MEI',
+        'Juni': 'JUNI'
+    };
+    return bulanMap[bulan];
+}
+
+async function getJeninsPembayaranForNominal(kelas, tahun_ajaran){
+    try {
+        const query = ` select
+                            jp.jenis_transaksi 
+                            from smknutulis.jenis_pembayaran jp 
+                            where jp.kelas =:kelas
+                            and jp.tahun_ajaran =:tahun_ajaran`;
+        const result = await db.sequelize.query(query, {
+            replacements: {kelas, tahun_ajaran},
+            type: db.Sequelize.QueryTypes.SELECT,
+        })
+
+        return result;
+    } catch (error) {
+        console.error('Error: ', error);
+        throw error;
+
+    }
+}
 module.exports = {
     getDataSpp,
     getDataSppByNisn,
@@ -450,5 +632,8 @@ module.exports = {
     jenisPembayaran,
     jenisPembayaranPaymentUsingJenisTransaksi,
     insertJenisPembayaran,
-    getJenisPembayaranAll
+    getJenisPembayaranAll,
+    getRekapPembayaranSpp,
+    getRekapPembayaranPraktik,
+    getJeninsPembayaranForNominal
 }

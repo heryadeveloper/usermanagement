@@ -46,8 +46,8 @@ const registrationPpdb = {
         pekerjaan_ayah: Joi.string(),
         nama_ibu: Joi.string(),
         pekerjaan_ibu: Joi.string(),
-        nama_wali: Joi.string(),
-        pekerjaan_wali: Joi.string(),
+        nama_wali: Joi.string().optional(),
+        pekerjaan_wali: Joi.string().optional(),
         no_hp_orang_tua: Joi.string(),
         program_jurusan_yang_diminati: Joi.string()
     })
