@@ -141,6 +141,7 @@ async function getRekapPembayaranSpp(req){
         if(jenisPembayaran === 'SPP'){
             data = await laporanSppMysqlRepository.getRekapPembayaranSpp(kelas);
         }else{
+            console.log('Rule Payment Praktik');
             data = await laporanSppMysqlRepository.getRekapPembayaranPraktik(kelas);
         }
         return data;

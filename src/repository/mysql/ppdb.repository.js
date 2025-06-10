@@ -1,5 +1,7 @@
+const { where } = require('sequelize');
 const db = require('../../db/modelsmysql/');
 const moment = require('moment-timezone');
+const logger = require('../../config/logger');
 
 
 async function insertPpdbSiswaSmkNu(nama_lengkap, tanggal_pendaftaran, nisn, asal_sekolah, tahun_kelulusan,
@@ -49,6 +51,20 @@ async function insertPpdbSiswaSmkNu(nama_lengkap, tanggal_pendaftaran, nisn, asa
             }
     }
 
+async function deleteDataPpdb(id, nisn) {
+    try {
+        const deletePpdb = await db.ppdb_smknu.destroy({
+            where: {
+                id,
+                nisn
+            }
+        })
+        return deletePpdb;
+    } catch (error) {
+        logger.error('delete data ppdb error');
+    }
+}
 module.exports = {
-    insertPpdbSiswaSmkNu
+    insertPpdbSiswaSmkNu,
+    deleteDataPpdb
 }

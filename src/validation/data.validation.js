@@ -53,8 +53,16 @@ const registrationPpdb = {
     })
 }
 
+const deleteDataPpdb = {
+    body: Joi.object().keys({
+        id: Joi.number().required(),
+        nisn: Joi.string()
+    })
+}
+
 module.exports = {
     updateKenaikanKelas,
     addPaymentInstruction,
-    registrationPpdb
+    registrationPpdb,
+    deleteDataPpdb
 }

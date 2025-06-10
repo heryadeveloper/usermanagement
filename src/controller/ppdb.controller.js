@@ -1,7 +1,8 @@
-const { ppdbService } = require("../service");
+const { ppdbService, laporanPpdbService } = require("../service");
 const catchAsync = require("../utils/catchAsync");
 const responses = require('../utils/responseInfo');
 const errorExpectationFailed = require('../utils/errorExpectationFailed');
+const logger = require("../config/logger");
 
 
 const insertPpdb = catchAsync(async(req, res) => {
@@ -18,8 +19,24 @@ const insertPpdb = catchAsync(async(req, res) => {
         console.error('Error in insertPpdb:', error);
         return res.status(500).json({ message: 'Internal server error!' });
     }
+});
+
+const deleteDataPpdb = catchAsync(async(req, res) => {
+    try {
+        logger.info('processing delete data ppdb in controller');
+        const deleteDataPpdbController = await laporanPpdbService.deleteDataPpdb(req);
+        res.send(responses('success delete data ppdb : ', deleteDataPpdbController));
+    } catch (error) {
+        logger.error('Error delete data ppdb in controller');
+        return res.status(500).json(
+            {
+                message: 'Something Error'
+            }
+        )
+    }
 })
 
 module.exports = {
-    insertPpdb
+    insertPpdb,
+    deleteDataPpdb
 }

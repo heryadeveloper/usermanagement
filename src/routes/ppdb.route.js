@@ -7,6 +7,7 @@ const router = express.Router();
 
 const routes = [
     { path: '/registrasi', method: 'post', validation: dataValidation.registrationPpdb, handler: ppdbController.insertPpdb},
+    { path: '/deleteDataPpdb', method: 'post', validation: dataValidation.deleteDataPpdb, handler: ppdbController.deleteDataPpdb}
 ]
 
 routes.forEach(route => {

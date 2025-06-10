@@ -290,7 +290,7 @@ async function nilaiKekuranganPembayaran(nisn, kelas, tahun_ajaran, jenis_transa
                         (jp.nominal_total - sum(lss.nominal_bulan)) as perhitungan_baya
                         FROM jenis_pembayaran jp
                         JOIN laporan_spp_siswa lss 
-                            ON jp.tahun_ajaran = lss.tahun_bayar 
+                            ON jp.kode_pembayaran = lss.kode_bayar
                         AND jp.jenis_transaksi = lss.jenis_transaksi
                         AND jp.kelas = LEFT(lss.kelas, LOCATE(' ', lss.kelas) - 1)
                         WHERE lss.nisn = :nisn
@@ -304,7 +304,7 @@ async function nilaiKekuranganPembayaran(nisn, kelas, tahun_ajaran, jenis_transa
                         WHERE NOT EXISTS (
                             SELECT 1
                             FROM laporan_spp_siswa lss
-                            WHERE jp.tahun_ajaran = lss.tahun_bayar
+                            WHERE jp.kode_pembayaran = lss.kode_bayar
                             AND jp.jenis_transaksi = lss.jenis_transaksi
                             AND jp.kelas = LEFT(lss.kelas, LOCATE(' ', lss.kelas) - 1)
                             AND lss.nisn = :nisn
@@ -600,7 +600,8 @@ function getBulanKey(bulan) {
 async function getJeninsPembayaranForNominal(kelas, tahun_ajaran){
     try {
         const query = ` select
-                            jp.jenis_transaksi 
+                            jp.jenis_transaksi,
+                            jp.kode_pembayaran 
                             from jenis_pembayaran jp 
                             where jp.kelas =:kelas
                             and jp.tahun_ajaran =:tahun_ajaran`;
