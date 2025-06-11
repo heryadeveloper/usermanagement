@@ -17,6 +17,7 @@ async function deleteDataPpdb(req) {
         logger.info('processing delete data ppdb in service');
         const {id, nisn} = req.body;
         const dataDelete = await ppdbSmknuRepository.deleteDataPpdb(id, nisn);
+        await ppdbSmknuRepository.updateNoUrutAfterDelete();
         return dataDelete;
     } catch (error) {
         logger.error('Delete ppdb error in service');

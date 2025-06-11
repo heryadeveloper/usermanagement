@@ -64,7 +64,32 @@ async function deleteDataPpdb(id, nisn) {
         logger.error('delete data ppdb error');
     }
 }
+
+async function updateNoUrutAfterDelete() {
+    try {
+        const queryUpdate = `
+            UPDATE ppdb_smknu AS t
+            JOIN (
+                SELECT id, @rownum := @rownum + 1 AS new_urut
+                FROM ppdb_smknu, (SELECT @rownum := 0) r
+                ORDER BY id
+            ) AS src ON t.id = src.id
+            SET t.no_urut = src.new_urut
+        `;
+
+        const responseData = await db.sequelize.query(queryUpdate, {
+            type: db.Sequelize.QueryTypes.UPDATE,
+        });
+
+        return responseData;
+    } catch (error) {
+        console.error("Error updating no_urut:", error);
+        throw error;
+    }
+}
+
 module.exports = {
     insertPpdbSiswaSmkNu,
-    deleteDataPpdb
+    deleteDataPpdb,
+    updateNoUrutAfterDelete
 }
