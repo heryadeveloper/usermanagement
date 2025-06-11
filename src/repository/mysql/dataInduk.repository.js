@@ -302,14 +302,15 @@ async function getDataFormPpdb(nisn) {
 
 async function getDataSiswaPPDB() {
     try {
-        const query = `select 
+        const query = `select
             id,
+            no_urut,
             tanggal_pendaftaran,
             nama_lengkap ,
             nisn,
             asal_sekolah ,
             no_wa
-            from ppdb_smknu`;
+            from ppdb_smknu order by id`;
         const responseData = await db.sequelize.query(query, {
             type: db.Sequelize.QueryTypes.SELECT,
         });
