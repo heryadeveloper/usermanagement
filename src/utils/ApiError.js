@@ -12,4 +12,16 @@ class ApiError extends Error {
     }
 }
 
-module.exports = ApiError;
+class HttpError extends Error {
+    constructor(statusCode, statusText, message, data = null) {
+        super(message);
+        this.statusCode = statusCode;
+        this.statusText = statusText;
+        this.data = data;
+    }
+}
+
+module.exports = {
+    ApiError,
+    HttpError
+};

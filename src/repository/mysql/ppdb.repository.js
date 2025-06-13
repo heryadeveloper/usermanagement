@@ -65,6 +65,19 @@ async function deleteDataPpdb(id, nisn) {
     }
 }
 
+async function cekNisnAvailable(nisn){
+    try {
+        const cekNisn = await db.ppdb_smknu.findOne({
+            where: {
+                nisn
+            }
+        });
+        return cekNisn;
+    } catch (error) {
+        logger.error('cek nisn error');
+    }
+}
+
 async function updateNoUrutAfterDelete() {
     try {
         const queryUpdate = `
@@ -91,5 +104,6 @@ async function updateNoUrutAfterDelete() {
 module.exports = {
     insertPpdbSiswaSmkNu,
     deleteDataPpdb,
-    updateNoUrutAfterDelete
+    updateNoUrutAfterDelete,
+    cekNisnAvailable
 }

@@ -11,8 +11,8 @@ const insertPpdb = catchAsync(async(req, res) => {
         res.send(responses('Success Adding Data PPDB SMK : ', insertPpdbsmk));
     } catch (error) {
         console.error('Error in controller insertPpdb: ', error.message);
-
-        if (error.name === 'SequelizeUniqueConstraintError') {
+        logger.error('data: ', error.statusCode);
+        if (error.statusCode === 409) {
             res.status(409).send(errorExpectationFailed.dataConflict('Data Sudah Ada!', error.errors[0].value));
         }
           // Error lain
