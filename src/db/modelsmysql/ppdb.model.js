@@ -114,6 +114,10 @@ module.exports = (sequelize, DataTypes) => {
             program_jurusan_yang_diminati: {
                 type: DataTypes.STRING,
                 allowNull: false,
+            },
+            no_urut: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
             }
         },{
             tableName:'ppdb_smknu'

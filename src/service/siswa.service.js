@@ -232,7 +232,7 @@ const generateAlignedPDF = (doc, databaru) => {
     addRow('Alamat', databaru.alamat);
     addRow('E-mail', databaru.email);
     addRow('Asal Sekolah', databaru.asal_sekolah);
-    addRow('No. Pendaftaran', databaru.id);
+    addRow('No. Pendaftaran', databaru.no_urut);
     addRow('Prodi Pilihan', databaru.program_jurusan_yang_diminati);
 };
 
@@ -420,7 +420,7 @@ async function generateExcel(res) {
 
          // Tambahkan header
         worksheet.columns = [
-            { header: "No", key: "id", width: 3 },
+            { header: "No", key: "no_urut", width: 3 },
             { header: "Nama Lengkap", key: "nama_lengkap", width: 20 },
             { header: "Nisn", key: "nisn", width: 10 },
             { header: "Asal Sekolah", key: "asal_sekolah", width: 20 },

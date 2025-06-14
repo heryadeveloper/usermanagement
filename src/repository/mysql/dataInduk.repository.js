@@ -324,7 +324,7 @@ async function getDataSiswaPPDB() {
 async function getDataSiswaPPDBForGenerateExcel() {
     try {
         const query = `select *
-            from ppdb_smknu`;
+            from ppdb_smknu order by id asc`;
         const responseData = await db.sequelize.query(query, {
             type: db.Sequelize.QueryTypes.SELECT,
         });
