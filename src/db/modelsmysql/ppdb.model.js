@@ -117,7 +117,7 @@ module.exports = (sequelize, DataTypes) => {
             },
             no_urut: {
                 type: DataTypes.INTEGER,
-                allowNull: false,
+                allowNull: true,
             }
         },{
             tableName:'ppdb_smknu'
