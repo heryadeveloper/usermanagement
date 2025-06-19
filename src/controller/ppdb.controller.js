@@ -13,7 +13,7 @@ const insertPpdb = catchAsync(async(req, res) => {
         console.error('Error in controller insertPpdb: ', error.message);
         logger.error('data: ', error.statusCode);
         if (error.statusCode === 409) {
-            res.status(409).send(errorExpectationFailed.dataConflict('Data Sudah Ada!', error.errors[0].value));
+            res.status(409).send(errorExpectationFailed.dataConflict('Data NISN Sudah Ada!', error.errors[0].value));
         }
           // Error lain
         console.error('Error in insertPpdb:', error);
