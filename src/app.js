@@ -7,12 +7,12 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const app = express();
 
-const corsOptions = {
-    origin: 'https://usermanagement.smknutulis.sch.id', // URL asal yang diizinkan
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Metode yang diizinkan
-    allowedHeaders: ['Content-Type', 'Authorization'], // Header yang diizinkan
-    credentials: true, // Mengizinkan pengiriman cookie atau kredensial
-};
+// const corsOptions = {
+//     origin: 'https://system.smknu-tulis.sch.id', // URL asal yang diizinkan
+//     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Metode yang diizinkan
+//     allowedHeaders: ['Content-Type', 'Authorization'], // Header yang diizinkan
+//     credentials: true, // Mengizinkan pengiriman cookie atau kredensial
+// };
 
 app.use((req, _, next) => {
     req.postgres = postgres;
@@ -31,8 +31,8 @@ app.get('/checkservice', (req, res) => {
 app.use(bodyParser.urlencoded({ extended: false}))
 app.use(bodyParser.json());
 
-app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
+// app.use(cors(corsOptions));
+// app.options('*', cors(corsOptions));
 app.use(cors());
 app.use(cookieParser());
 
