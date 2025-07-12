@@ -5,7 +5,7 @@ const db = require('../../db/modelsmysql');
 async function dataKelas(kelas, nisn, tahun_ajaran) {
     try {
         const query = `
-            SELECT * FROM smknutulis.data_kelas dkx
+            SELECT * FROM data_kelas dkx
             WHERE dkx.kelas = :kelas
             AND  dkx.tahun_ajaran = :tahun_ajaran
             AND (:nisn IS NULL OR dkx.nisn = :nisn)
@@ -30,7 +30,7 @@ async function promoteSiswaOrKelas(kelasLama, kelasBaru, tahunAjaranBaru, nisn) 
     try {
 
         let sql = `
-            INSERT INTO smknutulis.data_kelas 
+            INSERT INTO data_kelas 
             (nama, nisn, kelas, tahun_ajaran, input_date, updated_date, flag_naik_kelas)
             SELECT
             nama, nisn, :kelasBaru, :tahunAjaranBaru, SYSDATE(), SYSDATE(), 1
@@ -50,7 +50,7 @@ async function promoteSiswaOrKelas(kelasLama, kelasBaru, tahunAjaranBaru, nisn) 
         // hindari duplikasi
         sql += `
             AND NOT EXISTS (
-            SELECT 1 FROM smknutulis.data_kelas d2
+            SELECT 1 FROM data_kelas d2
             where d2.nisn = smknutulis.data_kelas.nisn
             and d2.kelas = :kelasBaru
             and d2.tahun_ajaran = :tahunAjaranBaru
