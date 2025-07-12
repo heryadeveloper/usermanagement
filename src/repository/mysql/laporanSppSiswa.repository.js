@@ -149,7 +149,7 @@ async function getBulanBelumBayar(nisn, kelas, tahunAjaranBaru) {
         )
         SELECT b.urut_bulan, b.bulan, b.tahun_ajaran
         FROM all_periods b
-        LEFT JOIN smknutulis.payment_siswa ps
+        LEFT JOIN payment_siswa ps
             ON ps.urut_bulan = b.urut_bulan
             AND ps.nisn = :nisn
             AND ps.kelas = :kelas
@@ -307,8 +307,8 @@ async function nilaiKekuranganPembayaran(nisn, kelas, jenis_transaksi){
                     jp.nominal_total,
                     ps.nama_siswa,
                     (jp.nominal_total - SUM(ps.nominal_bayar)) as perhitungan_bayar
-                    from smknutulis.payment_siswa ps 
-                    join smknutulis.jenis_pembayaran jp 
+                    from payment_siswa ps 
+                    join jenis_pembayaran jp 
                     on ps.jenis_transaksi = jp.jenis_transaksi
                     and jp.kelas  = left(ps.kelas, LOCATE(' ', ps.kelas) - 1)
                     and jp.kode_pembayaran = ps.kode_bayar
