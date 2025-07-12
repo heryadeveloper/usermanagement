@@ -2,6 +2,7 @@ const express = require('express');
 const validate = require('../middleware/validate');
 const { siswaController } = require('../controller');
 const { path } = require('@hapi/joi/lib/errors');
+const { dataValidation } = require('../validation');
 
 const router = express.Router();
 
@@ -19,7 +20,9 @@ const routes = [
     { path: '/download-formulir-ppdb', method: 'get', handler: siswaController.downloadFormulirPpdb},
     { path: '/getDataSiswaPPDB', method: 'get', handler: siswaController.getDataSiswaPPDB},
     { path: '/generateExcel', method: 'get', handler: siswaController.generateExcel},
-    { path: '/kekuranganPembayaran', method: 'get', handler: siswaController.getKekuranganPembayaranSiswa}
+    { path: '/kekuranganPembayaran', method: 'get', handler: siswaController.getKekuranganPembayaranSiswa},
+    { path: '/getDataKelas', method: 'get', handler: siswaController.getDataKelas},
+    { path: '/promoteSiswa', method: 'post', validation: dataValidation.promotoSiswa, handler: siswaController.promotoSiswa}
 ];
 
 routes.forEach(route => {

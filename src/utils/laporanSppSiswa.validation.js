@@ -15,6 +15,7 @@ const inputPembayaran = {
                 bulan_bayar: Joi.string().required(),
                 nominal_bayar: Joi.number().required(),
                 tahun_ajaran: Joi.string().required(),
+                urut_bulan: Joi.number()
             })
         ),
     }),

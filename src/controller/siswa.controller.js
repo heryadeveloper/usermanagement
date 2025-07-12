@@ -140,6 +140,32 @@ const getKekuranganPembayaranSiswa = catchAsync(async(req, res) => {
     }
 })
 
+const getDataKelas = catchAsync(async(req, res) => {
+    try {
+        const dataKelas = await siswaService.getDataKelas(req);
+        if (dataKelas) {
+            res.send(responseInfo('Success Get Data Kelas', dataKelas));
+        } else {
+            res.send(expectationFailed.dataNotFound('Data Tidak Ada di Table', null));
+        }
+    } catch (error) {
+        res.send(errorExpectationFailed('Internal Server Error', null));
+    }
+})
+
+const promotoSiswa = catchAsync(async(req, res) => {
+    try {
+        const promote = await siswaService.promoteSiswa(req);
+        if (promote) {
+            res.send(responseInfo('Success Promote siswa', promote));
+        } else {
+            res.send(expectationFailed.dataNotFound('Data Tidak Ditemukan', null));
+        }
+    } catch (error) {
+        res.send(errorExpectationFailed('Internal Service Error', null));
+    }
+})
+
 
 module.exports = {
     getDataSiswaInRombel,
@@ -154,5 +180,7 @@ module.exports = {
     downloadPdf, downloadFormulirPpdb,
     getDataSiswaPPDB,
     generateExcel,
-    getKekuranganPembayaranSiswa
+    getKekuranganPembayaranSiswa,
+    getDataKelas,
+    promotoSiswa
 }

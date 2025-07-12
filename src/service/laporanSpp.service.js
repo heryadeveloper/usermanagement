@@ -3,6 +3,7 @@ const { laporanSppSiswaRepository, kekuranganPembayaranRepository, laporanSppMys
 const ApiError = require("../utils/ApiError");
 const expectationFailed = require('../utils/errorExpectationFailed');
 const httpStatus = require("http-status");
+const logger = require("../config/logger");
 
 async function getDataSpp(req){
     try {
@@ -17,9 +18,16 @@ async function getDataSpp(req){
 
 async function getDataSppByNisn(req){
     try {
-        const { nisn, kelas, tahun_ajaran, jenis_transaksi } = req.query;
-        const getDataSppByNisns = await laporanSppMysqlRepository.getDataSppByNisn(nisn, kelas);
-        const nilaiKekuranganSiswa = await laporanSppMysqlRepository.nilaiKekuranganPembayaran(nisn, kelas, tahun_ajaran, jenis_transaksi);
+        const { nisn, kode_bayar} = req.query;
+        console.log('payload: ', nisn);
+        const getDataSppByNisns = await laporanSppMysqlRepository.getDataSppByNisn(nisn, kode_bayar);
+        console.log('get data: ', getDataSppByNisns);
+        let nilaiKekuranganSiswa = null;
+        if (getDataSppByNisns) {
+            nilaiKekuranganSiswa = await laporanSppMysqlRepository.nilaiKekuranganPembayaran(nisn, getDataSppByNisns[0].kelas, getDataSppByNisns[0].jenis_transaksi);
+            console.log('data 1: ', nilaiKekuranganSiswa);
+        }
+        
         return {
             dataSpp: getDataSppByNisns,
             nilaiKekurangan: nilaiKekuranganSiswa,
@@ -46,9 +54,11 @@ async function inputPembayaran(req){
     try {
         const findKodePembayaran = await laporanSppMysqlRepository.getKodePembayaran(kelas, tahun_ajaran);
         const kode_bayar = findKodePembayaran[0].kode_pembayaran;
+        const jenis_transaksi = findKodePembayaran[0].jenis_transaksi;
         console.log('kode bayar ', kode_bayar);
+        console.log('jenis transaksi ', jenis_transaksi);
         for(const datas of bulan){
-            const {bulan_bayar, nominal_bayar, tahun_ajaran} = datas;
+            const {bulan_bayar, nominal_bayar, tahun_ajaran, urut_bulan} = datas;
 
              // validasi terlebih dahulu, jika bulan dan tahun ajaran sudah ada di DB langsung di tolak transaksinya.
             const validasiBulanBayar = await laporanSppMysqlRepository.validasiBulanBayar(nisn, bulan_bayar, tahun_ajaran);
@@ -60,7 +70,7 @@ async function inputPembayaran(req){
             
                 const countData = await laporanSppMysqlRepository.getCountKekuranganPembayaranSiswa(nisn, kode_bayar);
                 // insert table bayar spp
-                await laporanSppMysqlRepository.insertPembayaranSpp(nama, kelas, nisn, kode_bayar, nominal_bayar, bulan_bayar, petugas_input, tanggal_bayar, tahun_ajaran);
+                await laporanSppMysqlRepository.insertPaymentSiswa(nama, kelas, nisn, kode_bayar, jenis_transaksi, nominal_bayar, bulan_bayar, petugas_input, tanggal_bayar, tahun_ajaran, urut_bulan);
                 if (countData === 0) {
                     const perhitungan = findKodePembayaran[0].nominal_total - nominal_bayar;
                     await kekuranganPembayaranMysqlRepository.insertTableKekuranganPembayaranSiswa(nama, kelas, nisn, kode_bayar, 'SPP', perhitungan, petugas_input);

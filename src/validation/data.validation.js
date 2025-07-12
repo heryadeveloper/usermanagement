@@ -60,9 +60,19 @@ const deleteDataPpdb = {
     })
 }
 
+const promotoSiswa = {
+    body: Joi.object().keys({
+        kelasLama: Joi.string().required(),
+        kelasBaru: Joi.string(),
+        tahunAjaranBaru: Joi.string(),
+        nisn: Joi.string().allow(null, ''),
+    })
+}
+
 module.exports = {
     updateKenaikanKelas,
     addPaymentInstruction,
     registrationPpdb,
-    deleteDataPpdb
+    deleteDataPpdb,
+    promotoSiswa
 }

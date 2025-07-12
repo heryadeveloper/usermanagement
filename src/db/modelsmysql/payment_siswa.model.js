@@ -56,6 +56,10 @@ module.exports = (sequelize, DataTypes) => {
             tahun_bayar:{
                 type: DataTypes.STRING,
                 allowNull:true,
+            },
+            urut_bulan:{
+                type: DataTypes.INTEGER,
+                allowNull:true,
             }
         },{
             tableName:`payment_siswa`

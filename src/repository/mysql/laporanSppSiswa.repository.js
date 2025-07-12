@@ -3,6 +3,7 @@ const db = require('../../db/modelsmysql');
 const {sequelize} = require('../../db/modelsmysql');
 const { QueryTypes } = require('sequelize');
 const { raw } = require('body-parser');
+const logger = require('../../config/logger');
 
 async function getDataSpp(bulan_bayar, tahun_bayar, kelas, page, pageSize){
     try {
@@ -42,58 +43,75 @@ async function getDataSpp(bulan_bayar, tahun_bayar, kelas, page, pageSize){
     }
 }
 
-async function getDataSppByNisn(nisn, kelas) {
+// async function getDataSppByNisn(nisn, kelas) {
+//     try {
+//         const subqueryAllMonths = `
+//             SELECT 'Januari' AS bulan, 1 as urutan_bulan UNION
+//             SELECT 'Februari' AS bulan, 2 as urutan_bulan UNION
+//             SELECT 'Maret' AS bulan, 3 as urutan_bulan UNION
+//             SELECT 'April' AS bulan, 4 as urutan_bulan UNION
+//             SELECT 'Mei' AS bulan, 5 as urutan_bulan UNION
+//             SELECT 'Juni' AS bulan, 6 as urutan_bulan UNION
+//             SELECT 'Juli' AS bulan, 7 as urutan_bulan UNION
+//             SELECT 'Agustus' AS bulan, 8 as urutan_bulan UNION
+//             SELECT 'September' AS bulan, 9 as urutan_bulan UNION
+//             SELECT 'Oktober' AS bulan, 10 as urutan_bulan UNION
+//             SELECT 'November' AS bulan, 11 as urutan_bulan UNION
+//             SELECT 'Desember' AS bulan, 12 as urutan_bulan
+//         `;
+
+//         const query = `
+//             SELECT 
+//                 all_months.bulan, 
+//                 COALESCE(paid_months.nominal_bulan, 0) AS nominal,
+//                 paid_months.tahun_bayar,
+//                 date_format(paid_months.tanggal_bayar, '%d %M %Y') AS tanggal_bayar,
+//                 paid_months.petugas_input
+//             FROM (${subqueryAllMonths}) AS all_months
+//             LEFT JOIN (
+//                 SELECT 
+//                     bulan_bayar, 
+//                     nominal_bulan, 
+//                     tahun_bayar, 
+//                     tanggal_bayar, 
+//                     petugas_input
+//                 FROM laporan_spp_siswa
+//                 WHERE nisn = :nisn
+//                 and tahun_bayar not in ('N')
+//                 and kelas = :kelas
+//             ) AS paid_months
+//             ON all_months.bulan = paid_months.bulan_bayar
+//             WHERE COALESCE(paid_months.nominal_bulan, 0) != 0
+//             ORDER BY all_months.urutan_bulan;
+//         `;
+
+//         const responseData = await db.sequelize.query(query, {
+//             replacements: { nisn, kelas },
+//             type: QueryTypes.SELECT,
+//         });
+//         console.log('response dari query: ', responseData);
+
+//         return responseData;
+
+//     } catch (error) {
+//         console.error('Error when getting data SPP: ', error);
+//         throw error;
+//     }
+// }
+
+async function getDataSppByNisn(nisn, kode_bayar){
     try {
-        const subqueryAllMonths = `
-            SELECT 'Januari' AS bulan, 1 as urutan_bulan UNION
-            SELECT 'Februari' AS bulan, 2 as urutan_bulan UNION
-            SELECT 'Maret' AS bulan, 3 as urutan_bulan UNION
-            SELECT 'April' AS bulan, 4 as urutan_bulan UNION
-            SELECT 'Mei' AS bulan, 5 as urutan_bulan UNION
-            SELECT 'Juni' AS bulan, 6 as urutan_bulan UNION
-            SELECT 'Juli' AS bulan, 7 as urutan_bulan UNION
-            SELECT 'Agustus' AS bulan, 8 as urutan_bulan UNION
-            SELECT 'September' AS bulan, 9 as urutan_bulan UNION
-            SELECT 'Oktober' AS bulan, 10 as urutan_bulan UNION
-            SELECT 'November' AS bulan, 11 as urutan_bulan UNION
-            SELECT 'Desember' AS bulan, 12 as urutan_bulan
-        `;
-
-        const query = `
-            SELECT 
-                all_months.bulan, 
-                COALESCE(paid_months.nominal_bulan, 0) AS nominal,
-                paid_months.tahun_bayar,
-                date_format(paid_months.tanggal_bayar, '%d %M %Y') AS tanggal_bayar,
-                paid_months.petugas_input
-            FROM (${subqueryAllMonths}) AS all_months
-            LEFT JOIN (
-                SELECT 
-                    bulan_bayar, 
-                    nominal_bulan, 
-                    tahun_bayar, 
-                    tanggal_bayar, 
-                    petugas_input
-                FROM laporan_spp_siswa
-                WHERE nisn = :nisn
-                and tahun_bayar not in ('N')
-                and kelas = :kelas
-            ) AS paid_months
-            ON all_months.bulan = paid_months.bulan_bayar
-            WHERE COALESCE(paid_months.nominal_bulan, 0) != 0
-            ORDER BY all_months.urutan_bulan;
-        `;
-
-        const responseData = await db.sequelize.query(query, {
-            replacements: { nisn, kelas },
-            type: QueryTypes.SELECT,
+        const response = await db.payment_siswa.findAll({
+            where:{
+                nisn,
+                kode_bayar
+            },
+            order:[['urut_bulan','ASC']],
+            raw: true,
         });
-        console.log('response dari query: ', responseData);
-
-        return responseData;
-
+        return response;
     } catch (error) {
-        console.error('Error when getting data SPP: ', error);
+        logger.error('Error when getting data : ', error);
         throw error;
     }
 }
@@ -101,18 +119,18 @@ async function getDataSppByNisn(nisn, kelas) {
 async function getBulanBelumBayar(nisn, kelas, tahunAjaranBaru) {
     try {
         const subqueryAllMonths = `
-        SELECT 'Juli' AS bulan, 7 AS urutan_bulan UNION
-        SELECT 'Agustus' AS bulan, 8 AS urutan_bulan UNION
-        SELECT 'September' AS bulan, 9 AS urutan_bulan UNION
-        SELECT 'Oktober' AS bulan, 10 AS urutan_bulan UNION
-        SELECT 'November' AS bulan, 11 AS urutan_bulan UNION
-        SELECT 'Desember' AS bulan, 12 AS urutan_bulan UNION
-        SELECT 'Januari' AS bulan, 1 AS urutan_bulan UNION
-        SELECT 'Februari' AS bulan, 2 AS urutan_bulan UNION
-        SELECT 'Maret' AS bulan, 3 AS urutan_bulan UNION
-        SELECT 'April' AS bulan, 4 AS urutan_bulan UNION
-        SELECT 'Mei' AS bulan, 5 AS urutan_bulan UNION
-        SELECT 'Juni' AS bulan, 6 AS urutan_bulan
+        SELECT 'Juli' AS bulan, 1 AS urut_bulan UNION
+        SELECT 'Agustus' AS bulan, 2 AS urut_bulan UNION
+        SELECT 'September' AS bulan, 3 AS urut_bulan UNION
+        SELECT 'Oktober' AS bulan, 4 AS urut_bulan UNION
+        SELECT 'November' AS bulan, 5 AS urut_bulan UNION
+        SELECT 'Desember' AS bulan, 6 AS urut_bulan UNION
+        SELECT 'Januari' AS bulan, 7 AS urut_bulan UNION
+        SELECT 'Februari' AS bulan, 8 AS urut_bulan UNION
+        SELECT 'Maret' AS bulan, 9 AS urut_bulan UNION
+        SELECT 'April' AS bulan, 10 AS urut_bulan UNION
+        SELECT 'Mei' AS bulan,11 AS urut_bulan UNION
+        SELECT 'Juni' AS bulan, 12 AS urut_bulan
         `;
 
         const query = `
@@ -123,24 +141,19 @@ async function getBulanBelumBayar(nisn, kelas, tahunAjaranBaru) {
             SELECT 
                 bulan, 
                 CASE 
-                    WHEN urutan_bulan >= 7 THEN :tahun_ajaran
+                    WHEN urut_bulan < 7 THEN :tahun_ajaran
                     ELSE :tahun_ajaran + 1
                 END AS tahun_ajaran,
-                urutan_bulan
+                urut_bulan
             FROM all_months
         )
-        SELECT 
-            ap.bulan, 
-            ap.tahun_ajaran 
-        FROM all_periods ap
-        LEFT JOIN (
-            SELECT bulan_bayar, CAST(tahun_bayar AS UNSIGNED) AS tahun_bayar
-            FROM laporan_spp_siswa
-            WHERE kelas = :kelas AND nisn = :nisn
-        ) lss
-        ON ap.bulan = lss.bulan_bayar AND ap.tahun_ajaran = lss.tahun_bayar
-        WHERE lss.bulan_bayar IS NULL
-        ORDER BY ap.tahun_ajaran, ap.urutan_bulan;
+        SELECT b.urut_bulan, b.bulan, b.tahun_ajaran
+        FROM all_periods b
+        LEFT JOIN smknutulis.payment_siswa ps
+            ON ps.urut_bulan = b.urut_bulan
+            AND ps.nisn = :nisn
+            AND ps.kelas = :kelas
+        WHERE ps.urut_bulan IS NULL;
         `;
 
         const responseData = await db.sequelize.query(query, {
@@ -165,26 +178,27 @@ async function getKodePembayaran(kelas, tahun_ajaran){
             kelas: kelas_split,
             tahun_ajaran: tahun_ajaran
         },
-        attributes:['kode_pembayaran', 'nominal_bulan', 'nominal_total'],
+        attributes:['jenis_transaksi','kode_pembayaran', 'nominal_bulan', 'nominal_total'],
         raw: true
     });
     return getKodeBayar;
 }
 
-async function insertPembayaranSpp(nama, kelas, nisn, kode_bayar, nominal, bulan_bayar, petugas_input, tanggal_bayar, tahun_ajaran){
+async function insertPaymentSiswa(nama, kelas, nisn, kode_bayar, jenis_transaksi, nominal, bulan_bayar, petugas_input, tanggal_bayar, tahun_ajaran, urut_bulan){
     try {
-        await db.laporan_spp_siswa.create({
+        await db.payment_siswa.create({
             nama_siswa: nama,
             kelas,
             nisn,
             bulan_bayar,
             tanggal_bayar,
             kode_bayar,
-            jenis_transaksi: 'SPP',
-            nominal_bulan: nominal,
+            jenis_transaksi,
+            nominal_bayar: nominal,
             created_at: new Date,
-            petugas_input,
-            tahun_bayar: tahun_ajaran
+            inputter: petugas_input,
+            tahun_bayar: tahun_ajaran,
+            urut_bulan
         });
     } catch (error) {
         console.error('Error when inserting data table laporan spp ', error);
@@ -284,41 +298,30 @@ async function validasiBulanBayar(nisn, bulan_bayar, tahun_ajaran){
 }
 // end step input pembayaran
 
-async function nilaiKekuranganPembayaran(nisn, kelas, tahun_ajaran, jenis_transaksi){
+async function nilaiKekuranganPembayaran(nisn, kelas, jenis_transaksi){
     try {
-        const query = `SELECT jp.nominal_bulan, jp.kode_pembayaran, jp.nominal_total, lss.nama_siswa,
-                        (jp.nominal_total - sum(lss.nominal_bulan)) as perhitungan_baya
-                        FROM jenis_pembayaran jp
-                        JOIN laporan_spp_siswa lss 
-                            ON jp.kode_pembayaran = lss.kode_bayar
-                        AND jp.jenis_transaksi = lss.jenis_transaksi
-                        AND jp.kelas = LEFT(lss.kelas, LOCATE(' ', lss.kelas) - 1)
-                        WHERE lss.nisn = :nisn
-                        AND lss.kelas = :kelas
-                        GROUP BY jp.nominal_bulan, jp.kode_pembayaran, jp.nominal_total, lss.nama_siswa
-
-                        UNION ALL
-
-                        SELECT jp.nominal_bulan, jp.kode_pembayaran, jp.nominal_total, NULL as nama_siswa, NULL as perhitungan_baya
-                        FROM jenis_pembayaran jp
-                        WHERE NOT EXISTS (
-                            SELECT 1
-                            FROM laporan_spp_siswa lss
-                            WHERE jp.kode_pembayaran = lss.kode_bayar
-                            AND jp.jenis_transaksi = lss.jenis_transaksi
-                            AND jp.kelas = LEFT(lss.kelas, LOCATE(' ', lss.kelas) - 1)
-                            AND lss.nisn = :nisn
-                            AND lss.kelas = :kelas
-                        )
-                        AND jp.tahun_ajaran = :tahun_ajaran
-                        AND jp.kelas = LEFT(:kelas, LOCATE(' ', :kelas) - 1)
-                        AND jp.jenis_transaksi = :jenis_transaksi`;
+        console.log(nisn, kelas, jenis_transaksi);
+        const query = `select 
+                    jp.nominal_bulan,
+                    jp.kode_pembayaran,
+                    jp.nominal_total,
+                    ps.nama_siswa,
+                    (jp.nominal_total - SUM(ps.nominal_bayar)) as perhitungan_bayar
+                    from smknutulis.payment_siswa ps 
+                    join smknutulis.jenis_pembayaran jp 
+                    on ps.jenis_transaksi = jp.jenis_transaksi
+                    and jp.kelas  = left(ps.kelas, LOCATE(' ', ps.kelas) - 1)
+                    and jp.kode_pembayaran = ps.kode_bayar
+                    where ps.nisn = :nisn
+                    and ps.jenis_transaksi = :jenis_transaksi
+                    and ps.kelas = :kelas`
+                    ;
                                 
         const responseData = await db.sequelize.query(query, {
-            replacements: {nisn, kelas, tahun_ajaran, jenis_transaksi},
+            replacements: {nisn, kelas, jenis_transaksi},
             type: db.Sequelize.QueryTypes.SELECT,
         });
-
+        console.log(responseData);
         return responseData;
     } catch (error) {
         console.error('Error get data nilai kekurangan pembayaran ', error);
@@ -622,7 +625,7 @@ module.exports = {
     getDataSppByNisn,
     getBulanBelumBayar,
     getKodePembayaran,
-    insertPembayaranSpp,
+    insertPaymentSiswa,
     getDataKekurangan,
     getCountKekuranganPembayaranSiswa,
     getDataKekuaranganPemasukan,

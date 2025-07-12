@@ -1,10 +1,11 @@
-const { dataIndukRepository, dataIndukMysqlRepository, kekuranganPembayaranMysqlRepository } = require("../repository");
+const { dataIndukRepository, dataIndukMysqlRepository, kekuranganPembayaranMysqlRepository, datasiswaRepository } = require("../repository");
 const PDFDocument = require('pdfkit');
 const path = require('path');
 const moment = require('moment');
 const ExcelJs = require('exceljs');
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
+const logger = require("../config/logger");
 // const { width } = require("pdfkit/js/page");
 
 async function listSiswa(req){
@@ -492,6 +493,28 @@ async function getKekuranganPembayaranSiswa(req) {
     }
 }
 
+async function getDataKelas(req){
+    try {
+        logger.info('Get Data Kelas');
+        const {kelas, nisn, tahun_ajaran} = req.query;
+        const data = await datasiswaRepository.dataKelas(kelas, nisn, tahun_ajaran);
+        return data;
+    } catch (error) {
+        logger.error('Error in service getData Kelas');
+    }
+}
+
+async function promoteSiswa(req){
+    try {
+        logger.info('promote siswa');
+        const {kelasLama, kelasBaru, tahunAjaranBaru, nisn} = req.body;
+        const data = await datasiswaRepository.promoteSiswaOrKelas(kelasLama, kelasBaru, tahunAjaranBaru, nisn);
+        return data;
+    } catch (error) {
+        logger.error('Error in service promote siswa');
+    }
+}
+
 
 module.exports = {
     listSiswa,
@@ -505,5 +528,7 @@ module.exports = {
     downloadFormPpdb,
     getDataSiswaPPDB,
     generateExcel,
-    getKekuranganPembayaranSiswa
+    getKekuranganPembayaranSiswa,
+    getDataKelas,
+    promoteSiswa
 }
