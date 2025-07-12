@@ -109,7 +109,13 @@ async function getDataSppByNisn(nisn, kode_bayar){
             order:[['urut_bulan','ASC']],
             raw: true,
         });
-        return response;
+
+        const formattedDate = response.map(record => {
+            const format = moment(record.tanggal_bayar).format('DD-MM-YYYY');
+            return { ...record, tanggal_bayar: format};
+        });
+
+        return formattedDate;
     } catch (error) {
         logger.error('Error when getting data : ', error);
         throw error;
