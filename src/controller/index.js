@@ -5,3 +5,4 @@ module.exports.laporanPpdbController = require('../controller/laporanPpdb.contro
 module.exports.configController = require('../controller/config.controller');
 module.exports.dataController = require('../controller/data.controller');
 module.exports.ppdbController = require('../controller/ppdb.controller');
+module.exports.uploadController = require('../controller/upload.controller');

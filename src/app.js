@@ -5,6 +5,7 @@ const routess = require('./routes');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+const path = require('path');
 const app = express();
 
 // const corsOptions = {
@@ -37,7 +38,9 @@ app.use(cors());
 app.use(cookieParser());
 
 app.use('/v2', routess);
+app.use('/upload', express.static(path.join(__dirname, '../public/upload')));
 
+console.log('Serving static from:', path.join(__dirname, '../public'));
 
 
 module.exports = app;

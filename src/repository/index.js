@@ -9,3 +9,4 @@ module.exports.kekuranganPembayaranMysqlRepository = require('./mysql/kekurangan
 module.exports.laporanPraktikumSiswaMysqlRepository = require('./mysql/laporanPembayaranPraktikum.repository');
 module.exports.ppdbSmknuRepository = require('./mysql/ppdb.repository');
 module.exports.datasiswaRepository = require('./mysql/datasiswa.repository');
+module.exports.uploadDocRepository = require('./mysql/uploaddoc.repository');

@@ -34,7 +34,11 @@ module.exports = (sequelize, DataTypes) => {
             flag_naik_kelas:{
                 type:DataTypes.INTEGER,
                 allowNull:true,
-            },
+            }
+        }, {
+            tableName: 'data_kelas'
         }
-    )
+    );
+
+    return dataKelas;
 }
